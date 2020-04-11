@@ -1,0 +1,50 @@
+plugins {
+    id "java"
+    id "org.jetbrains.kotlin.jvm" version "1.3.71"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+}
+
+group "me.tigermouthbear"
+version "1.0-SNAPSHOT"
+
+sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes (
+                "Main-Class": "me.tigermouthbear.theia.MainKt"
+        )
+    }
+}
+
+shadowJar() {
+    classifier = "release"
+
+    manifest {
+        attributes "Main-Class": "me.tigermouthbear.theia.MainKt"
+    }
+}
+
+build.dependsOn.add("shadowJar")
+
+repositories {
+    mavenCentral()
+    maven { url "http://oss.sonatype.org/content/groups/public/" }
+}
+
+dependencies {
+    compile "org.ow2.asm:asm:7.3.1"
+    compile "org.ow2.asm:asm-tree:7.3.1"
+    compile "org.ow2.asm:asm-commons:7.3.1"
+    compile "org.ow2.asm:asm-util:7.3.1"
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    testCompile group: "junit", name: "junit", version: "4.12"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
