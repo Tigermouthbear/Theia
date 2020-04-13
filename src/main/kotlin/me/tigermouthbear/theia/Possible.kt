@@ -2,7 +2,9 @@ package me.tigermouthbear.theia
 
 /**
  * @author Tigermouthbear
- * 4/10/20
+ * 4/13/20
  */
 
-class Possible(val name: String, val body: String)
+class Possible(val severity: Severity, val description: String) {
+	enum class Severity { WARN, ALERT, CHECK }
+}

@@ -8,7 +8,7 @@ import java.io.File
  */
 
 fun main(args: Array<String>) {
-	if(args.size != 1) {
+	if(args.isEmpty()) {
 		println("Please specify input file!")
 		return
 	}
@@ -24,5 +24,6 @@ fun main(args: Array<String>) {
 	)
 	println("Created by Tigermouthbear\n")
 
-	Theia.run(File(args[0]))
+	if(args.size == 1) Theia.run(File(args[0]), "")
+	else if(args.size == 2) Theia.run(File(args[0]), args[1])
 }
