@@ -2,8 +2,8 @@ package me.tigermouthbear.theia
 
 import me.tigermouthbear.theia.checks.AbstractCheck
 import me.tigermouthbear.theia.checks.ConnectionCheck
-import me.tigermouthbear.theia.checks.CommandCheck
 import me.tigermouthbear.theia.checks.URLCheck
+import me.tigermouthbear.theia.checks.ExecCheck;
 import java.io.File
 
 /**
@@ -12,30 +12,17 @@ import java.io.File
  */
 
 object Theia {
-	fun run(file: File, path: String) {
+	fun run(file: File) {
 		val program = Program(file)
 
-		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck())
+		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), ExecCheck())
 
 		checks.forEach { check ->
-			val possibles = arrayListOf<Possible>()
-			check.run(program, path).forEach { possible: Possible ->
-				if(possibles.stream().filter { checkingPossible ->
-						checkingPossible.description == possible.description
-					}.count().toInt() == 0)
-					possibles.add(possible)
+			println(check.name + "-> {")
+			check.run(program).forEach { possible ->
+				println("  " + possible.name + ": " + possible.body)
 			}
-
-			if(possibles.size > 0) {
-				println(check.name + ": {")
-				possibles.forEach { possible ->
-					println("	" + possible.severity.name + ": " + possible.description)
-				}
-				println("}")
-			}
-			else {
-				println(check.name + ": CLEAR")
-			}
+			println("}")
 		}
 	}
 }
