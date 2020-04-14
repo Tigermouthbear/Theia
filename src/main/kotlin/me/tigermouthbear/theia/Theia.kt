@@ -1,9 +1,6 @@
 package me.tigermouthbear.theia
 
-import me.tigermouthbear.theia.checks.AbstractCheck
-import me.tigermouthbear.theia.checks.ConnectionCheck
-import me.tigermouthbear.theia.checks.CommandCheck
-import me.tigermouthbear.theia.checks.URLCheck
+import me.tigermouthbear.theia.checks.*
 import java.io.File
 
 /**
@@ -15,7 +12,7 @@ object Theia {
 	fun run(file: File, path: String) {
 		val program = Program(file)
 
-		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck())
+		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), CoordCheck())
 
 		checks.forEach { check ->
 			val possibles = arrayListOf<Possible>()
