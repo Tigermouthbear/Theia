@@ -6,13 +6,13 @@ import org.objectweb.asm.tree.MethodInsnNode
 
 /**
  * @author Tigermouthbear
- * 4/13/20
+ * 4/15/20
  */
 
-class CommandCheck: AbstractCheck("CommandCheck") {
-	val methods = arrayOf(
-		"java/lang/Runtime:exec:(Ljava/lang/String;)Ljava/lang/Process;",
-		"java/lang/ProcessBuilder:command:([Ljava/lang/String;)Ljava/lang/ProcessBuilder;"
+class FileDeletionCheck: AbstractCheck("FileDeletionCheck") {
+	private val methods = arrayOf(
+		"java/io/File:delete:()Z",
+		"java/nio/file/Files:deleteIfExists:(Ljava/nio/file/Path;)Z"
 	)
 
 	override fun run(program: Program, path: String): List<Possible> {
@@ -25,8 +25,8 @@ class CommandCheck: AbstractCheck("CommandCheck") {
 					if(insn is MethodInsnNode && methods.contains(format(insn))) {
 						possibles.add(
 							Possible(
-								Possible.Severity.ALERT,
-								"Shell command executed in " + cn.name
+								Possible.Severity.WARN,
+								"Found file deletion in " + cn.name
 							)
 						)
 					}
@@ -34,6 +34,6 @@ class CommandCheck: AbstractCheck("CommandCheck") {
 			}
 		}
 
-		return possibles;
+		return possibles
 	}
 }

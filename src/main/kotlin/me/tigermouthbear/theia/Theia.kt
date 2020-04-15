@@ -12,7 +12,7 @@ object Theia {
 	fun run(file: File, path: String) {
 		val program = Program(file)
 
-		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), CoordCheck())
+		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck())
 
 		checks.forEach { check ->
 			val possibles = arrayListOf<Possible>()

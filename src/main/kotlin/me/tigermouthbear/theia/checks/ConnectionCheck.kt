@@ -10,12 +10,14 @@ import org.objectweb.asm.tree.TypeInsnNode
  * 4/11/20
  */
 
-class ConnectionCheck: AbstractCheck("UrlConnectionCheck") {
+class ConnectionCheck: AbstractCheck("WebConnectionCheck") {
 	private val types = arrayOf(
 		"java/net/HttpURLConnection",
 		"java/net/HttpsURLConnection",
 		"org/apache/http/impl/client/CloseableHttpClient",
-		"okhttp3/Request"
+		"okhttp3/Request",
+		"java/net/Socket",
+		"java/net/InetSocketAddress"
 	)
 
 	private val methods = arrayOf(
