@@ -29,8 +29,7 @@ object Theia {
 					println("	" + possible.severity.name + ": " + possible.description)
 				}
 				println("}")
-			}
-			else {
+			} else {
 				println(check.name + ": CLEAR")
 			}
 		}

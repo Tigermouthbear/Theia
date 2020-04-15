@@ -17,7 +17,10 @@ class ConnectionCheck: AbstractCheck("WebConnectionCheck") {
 		"org/apache/http/impl/client/CloseableHttpClient",
 		"okhttp3/Request",
 		"java/net/Socket",
-		"java/net/InetSocketAddress"
+		"java/net/InetSocketAddress",
+		"org/apache/http/impl/client/HttpClientBuilder",
+		"org/apache/http/client/methods/HttpPost"
+
 	)
 
 	private val methods = arrayOf(
