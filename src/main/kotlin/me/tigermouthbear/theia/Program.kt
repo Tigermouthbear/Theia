@@ -36,8 +36,11 @@ class Program(file: File) {
 						files[entry.name] = bytes
 					} else {
 						val c = ClassNode()
-						ClassReader(bytes).accept(c, ClassReader.EXPAND_FRAMES)
-						classNodes.put(c.name, c)
+						try {
+							ClassReader(bytes).accept(c, ClassReader.EXPAND_FRAMES)
+							classNodes.put(c.name, c)
+						} catch(ignored: Exception) {}
+
 					}
 
 				}

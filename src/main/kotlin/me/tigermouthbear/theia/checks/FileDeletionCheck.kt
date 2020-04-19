@@ -15,9 +15,7 @@ class FileDeletionCheck: AbstractCheck("FileDeletionCheck") {
 		"java/nio/file/Files:deleteIfExists:(Ljava/nio/file/Path;)Z"
 	)
 
-	override fun run(program: Program, path: String): List<Possible> {
-		val possibles = arrayListOf<Possible>()
-
+	override fun run(program: Program, path: String) {
 		for(cn in program.getClassNodes().values) {
 			if(!cn.name.startsWith(path)) continue
 			for(mn in cn.methods) {
@@ -26,14 +24,13 @@ class FileDeletionCheck: AbstractCheck("FileDeletionCheck") {
 						possibles.add(
 							Possible(
 								Possible.Severity.WARN,
-								"Found file deletion in " + cn.name
+								"Found file deletion",
+								cn.name
 							)
 						)
 					}
 				}
 			}
 		}
-
-		return possibles
 	}
 }

@@ -12,9 +12,7 @@ import org.objectweb.asm.tree.TypeInsnNode
  */
 
 class URLCheck: AbstractCheck("URLCheck") {
-	override fun run(program: Program, path: String): List<Possible> {
-		val possibles = arrayListOf<Possible>()
-
+	override fun run(program: Program, path: String) {
 		for(cn in program.getClassNodes().values) {
 			if(!cn.name.startsWith(path)) continue
 			for(mn in cn.methods) {
@@ -24,7 +22,8 @@ class URLCheck: AbstractCheck("URLCheck") {
 							possibles.add(
 								Possible(
 									Possible.Severity.WARN,
-									"Found URL [" + getURL(insn, program) + "] in " + cn.name
+									"Found URL [" + getURL(insn, program) + "]",
+									cn.name
 								)
 							)
 						}
@@ -32,8 +31,6 @@ class URLCheck: AbstractCheck("URLCheck") {
 				}
 			}
 		}
-
-		return possibles
 	}
 
 	//TODO: Make URL parsing better

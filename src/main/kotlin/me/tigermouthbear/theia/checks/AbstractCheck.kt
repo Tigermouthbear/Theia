@@ -10,7 +10,9 @@ import org.objectweb.asm.tree.MethodInsnNode
  */
 
 abstract class AbstractCheck(val name: String) {
-	abstract fun run(program: Program, path: String): List<Possible>
+	val possibles: ArrayList<Possible> = arrayListOf()
+
+	abstract fun run(program: Program, path: String)
 
 	protected fun format(insn: MethodInsnNode): String {
 		return insn.owner + ":" + insn.name + ":" + insn.desc;

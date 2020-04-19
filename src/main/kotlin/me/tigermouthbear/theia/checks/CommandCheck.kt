@@ -15,9 +15,7 @@ class CommandCheck: AbstractCheck("CommandCheck") {
 		"java/lang/ProcessBuilder:command:([Ljava/lang/String;)Ljava/lang/ProcessBuilder;"
 	)
 
-	override fun run(program: Program, path: String): List<Possible> {
-		val possibles = arrayListOf<Possible>()
-
+	override fun run(program: Program, path: String) {
 		for(cn in program.getClassNodes().values) {
 			if(!cn.name.startsWith(path)) continue
 			for(mn in cn.methods) {
@@ -26,14 +24,13 @@ class CommandCheck: AbstractCheck("CommandCheck") {
 						possibles.add(
 							Possible(
 								Possible.Severity.ALERT,
-								"Shell command executed in " + cn.name
+								"Shell command executed",
+								cn.name
 							)
 						)
 					}
 				}
 			}
 		}
-
-		return possibles;
 	}
 }
