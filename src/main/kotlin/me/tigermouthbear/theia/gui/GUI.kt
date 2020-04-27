@@ -19,6 +19,10 @@ object GUI: JFrame("Theia") {
 
 		addElements()
 
+		val index: InputStream = javaClass.classLoader.getResourceAsStream("icon.png")
+		val bytes = ByteArray(index.available())
+		index.read(bytes)
+		iconImage = ImageIcon(bytes).image
 		defaultCloseOperation = EXIT_ON_CLOSE
 		pack() // pack elements
 		setSize(650, 400)

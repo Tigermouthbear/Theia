@@ -23,7 +23,6 @@ object ResultsFrame: JFrame("Theia Results") {
 
 		add(scrollPane, BorderLayout.CENTER)
 
-		defaultCloseOperation = EXIT_ON_CLOSE
 		pack() // pack elements
 		setSize(1200, 800)
 		isVisible = true // set visible
