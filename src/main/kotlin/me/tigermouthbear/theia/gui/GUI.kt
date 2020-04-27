@@ -19,10 +19,7 @@ object GUI: JFrame("Theia") {
 
 		addElements()
 
-		val index: InputStream = javaClass.classLoader.getResourceAsStream("icon.png")
-		val bytes = ByteArray(index.available())
-		index.read(bytes)
-		iconImage = ImageIcon(bytes).image
+		iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image
 		defaultCloseOperation = EXIT_ON_CLOSE
 		pack() // pack elements
 		setSize(650, 400)
@@ -72,9 +69,6 @@ object GUI: JFrame("Theia") {
 		add(contentPanel, CENTER)
 
 		// add logo to frame
-		val index: InputStream = javaClass.classLoader.getResourceAsStream("theia.png")
-		val bytes = ByteArray(index.available())
-		index.read(bytes)
-		add(JLabel(ImageIcon(ImageIcon(bytes).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT))), NORTH)
+		add(JLabel(ImageIcon(ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT))), NORTH)
 	}
 }
