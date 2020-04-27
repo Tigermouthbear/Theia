@@ -6,6 +6,11 @@ import java.awt.BorderLayout.*
 import java.io.File
 import javax.swing.*
 
+/**
+ * @author Tigermouthbear
+ * 4/27/20
+ */
+
 object GUI: JFrame("Theia") {
 	private val defaultExclusions: List<String> = listOf(
 		"org/reflections/",

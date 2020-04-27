@@ -4,6 +4,11 @@ import java.awt.BorderLayout
 import java.awt.Font
 import javax.swing.*
 
+/**
+ * @author Tigermouthbear
+ * 4/27/20
+ */
+
 object ResultsFrame: JFrame("Theia Results") {
 	fun open(output: String) {
 		// set look and feel
