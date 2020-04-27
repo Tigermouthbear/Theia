@@ -9,13 +9,17 @@ import java.io.File
  */
 
 object Theia {
-	fun run(file: File, path: String): String {
+	private lateinit var exclusions: List<String>
+
+	fun run(file: File, exclusions: List<String>): String {
+		this.exclusions = exclusions
+
 		val program = Program(file)
 		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck())
 		val out = StringBuilder()
 
 		// run checks
-		checks.forEach { check -> check.run(program, path) }
+		checks.forEach { check -> check.run(program) }
 
 		// print checks
 		checks.forEach { check ->
@@ -52,5 +56,12 @@ object Theia {
 		}
 
 		return out.toString()
+	}
+
+	fun isExcluded(className: String): Boolean {
+		for(depencency in exclusions) {
+			if(className.startsWith(depencency)) return true
+		}
+		return false
 	}
 }

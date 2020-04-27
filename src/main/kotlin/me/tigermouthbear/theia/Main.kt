@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
 
 	when(args.size) {
 		0 -> GUI.open()
-		1 -> print(Theia.run(File(args[0]), ""))
-		2 -> print(Theia.run(File(args[0]), args[1]))
+		1 -> print(Theia.run(File(args[0]), args[1].split(",")))
+		2 -> print(Theia.run(File(args[0]), listOf()))
 	}
 }

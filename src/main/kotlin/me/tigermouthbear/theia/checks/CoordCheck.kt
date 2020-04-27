@@ -2,6 +2,7 @@ package me.tigermouthbear.theia.checks
 
 import me.tigermouthbear.theia.Possible
 import me.tigermouthbear.theia.Program
+import me.tigermouthbear.theia.Theia
 import org.objectweb.asm.tree.FieldInsnNode
 
 /**
@@ -16,9 +17,9 @@ class CoordCheck: AbstractCheck("CoordCheck") {
         "field_70161_v"
     )
 
-    override fun run(program: Program, path: String) {
+    override fun run(program: Program) {
         for(cn in program.getClassNodes().values) {
-            if(!cn.name.startsWith(path)) continue
+            if(Theia.isExcluded(cn.name)) continue
             for(mn in cn.methods) {
                 for(insn in mn.instructions) {
                     if(insn is FieldInsnNode && coordnames.contains(insn.name)) {

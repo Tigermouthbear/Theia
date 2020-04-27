@@ -1,17 +1,22 @@
 package me.tigermouthbear.theia.gui
 
 import me.tigermouthbear.theia.Theia
-import java.awt.BorderLayout
+import java.awt.*
 import java.awt.BorderLayout.*
-import java.awt.Component
-import java.awt.Image
 import java.io.File
-import java.io.InputStream
 import javax.swing.*
 
 object GUI: JFrame("Theia") {
+	private val defaultExclusions: List<String> = listOf(
+		"org/reflections/",
+		"javassist/",
+		"com/sun/jna/",
+		"org/spongepowered/"
+		)
+
 	lateinit var file: File
 	lateinit var fileLabel: JLabel
+	lateinit var checkbox: JCheckBox
 
 	fun open() {
 		// set look and feel
@@ -28,7 +33,7 @@ object GUI: JFrame("Theia") {
 
 	fun addElements() {
 		// create contentPanel
-		val contentPanel = JPanel(BorderLayout())
+		val contentPanel = JPanel(GridBagLayout())
 
 		// add file label to topPanel
 		val topPanel = JPanel()
@@ -42,20 +47,36 @@ object GUI: JFrame("Theia") {
 			if (fileChooser.showOpenDialog(e.source as Component?) == JFileChooser.APPROVE_OPTION) {
 				file = fileChooser.selectedFile
 				fileLabel.text = file.name
-
 			}
 		}
 		topPanel.add(fileButton)
 
 		//add topPanel to contentPanel
-		contentPanel.add(topPanel, CENTER)
+		val c = GridBagConstraints()
+		c.fill = GridBagConstraints.HORIZONTAL
+		c.weightx = 0.5
+		c.gridx = 0
+		c.gridy = 0
+		contentPanel.add(topPanel, c)
+
+		val midPanel = JPanel()
+		checkbox = JCheckBox("Exclude libraries")
+		checkbox.isSelected = true
+		midPanel.add(checkbox)
+
+		// add midPanel to contentPanel
+		c.fill = GridBagConstraints.HORIZONTAL
+		c.weightx = 0.5
+		c.gridx = 0
+		c.gridy = 1
+		contentPanel.add(midPanel, c)
 
 		// add run button to botPanel
 		val botPanel = JPanel()
 		val runButton = JButton("Run")
 		runButton.addActionListener {
 			if(::file.isInitialized) {
-				ResultsFrame.open(Theia.run(file, ""))
+				ResultsFrame.open(Theia.run(file, if(checkbox.isSelected) defaultExclusions else listOf()))
 			} else {
 				JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
 			}
@@ -63,7 +84,11 @@ object GUI: JFrame("Theia") {
 		botPanel.add(runButton)
 
 		// add botPanel to contentPanel
-		contentPanel.add(botPanel, SOUTH)
+		c.fill = GridBagConstraints.HORIZONTAL
+		c.weightx = 0.5
+		c.gridx = 0
+		c.gridy = 2
+		contentPanel.add(botPanel, c)
 
 		// add contentPanel to frame
 		add(contentPanel, CENTER)
