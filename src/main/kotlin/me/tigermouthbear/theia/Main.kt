@@ -1,5 +1,6 @@
 package me.tigermouthbear.theia
 
+import me.tigermouthbear.theia.gui.GUI
 import java.io.File
 
 /**
@@ -8,8 +9,9 @@ import java.io.File
  */
 
 fun main(args: Array<String>) {
-	if(args.isEmpty()) {
-		println("Please specify input file!")
+	if(args.size > 2) {
+		//TODO make help text
+		println("(HELP TEXT)")
 		return
 	}
 
@@ -24,6 +26,9 @@ fun main(args: Array<String>) {
 	)
 	println("Created by Tigermouthbear\n")
 
-	if(args.size == 1) Theia.run(File(args[0]), "")
-	else if(args.size == 2) Theia.run(File(args[0]), args[1])
+	when(args.size) {
+		0 -> GUI.open()
+		1 -> print(Theia.run(File(args[0]), ""))
+		2 -> print(Theia.run(File(args[0]), args[1]))
+	}
 }
