@@ -1,10 +1,17 @@
 package me.tigermouthbear.theia.gui
 
 import me.tigermouthbear.theia.Theia
-import java.awt.*
-import java.awt.BorderLayout.*
+import java.awt.BorderLayout.CENTER
+import java.awt.BorderLayout.NORTH
+import java.awt.Component
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import java.awt.Image
 import java.io.File
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import javax.swing.*
+
 
 /**
  * @author Tigermouthbear
@@ -17,11 +24,14 @@ object GUI: JFrame("Theia") {
 		"javassist/",
 		"com/sun/jna/",
 		"org/spongepowered/"
-		)
+	)
+
+	private val cachedExec: Executor = Executors.newCachedThreadPool()
 
 	lateinit var file: File
 	lateinit var fileLabel: JLabel
 	lateinit var checkbox: JCheckBox
+	lateinit var runButton: JButton
 
 	fun open() {
 		// set look and feel
@@ -78,12 +88,15 @@ object GUI: JFrame("Theia") {
 
 		// add run button to botPanel
 		val botPanel = JPanel()
-		val runButton = JButton("Run")
+		runButton = JButton("Run")
 		runButton.addActionListener {
-			if(::file.isInitialized) {
-				ResultsFrame.open(Theia.run(file, if(checkbox.isSelected) defaultExclusions else listOf()))
-			} else {
-				JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
+			if(runButton.text != "Running...") {
+				if(::file.isInitialized) {
+					runButton.text = "Running..."
+					cachedExec.execute { ResultsFrame.open(Theia.run(file, if(checkbox.isSelected) defaultExclusions else listOf())) }
+				} else {
+					JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
+				}
 			}
 		}
 		botPanel.add(runButton)

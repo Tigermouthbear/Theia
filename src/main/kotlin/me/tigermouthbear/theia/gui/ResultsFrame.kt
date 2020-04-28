@@ -31,5 +31,8 @@ object ResultsFrame: JFrame("Theia Results") {
 		pack() // pack elements
 		setSize(1200, 800)
 		isVisible = true // set visible
+
+		// reset run button
+		GUI.runButton.text = "Run"
 	}
 }

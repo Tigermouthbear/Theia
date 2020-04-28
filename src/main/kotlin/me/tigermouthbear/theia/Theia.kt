@@ -12,6 +12,8 @@ object Theia {
 	private lateinit var exclusions: List<String>
 
 	fun run(file: File, exclusions: List<String>): String {
+		val startTime = System.currentTimeMillis()
+
 		this.exclusions = exclusions
 
 		val program = Program(file)
@@ -54,6 +56,8 @@ object Theia {
 		} else {
 			out.append("Program all clear!\n")
 		}
+
+		out.append("\nTheia completed in " + (System.currentTimeMillis() - startTime) + " milliseconds")
 
 		return out.toString()
 	}
