@@ -8,13 +8,27 @@ import org.objectweb.asm.tree.FieldInsnNode
 /**
  * @author Crystallinqq
  * 4/14/20
+ * 
+ * Updated by dominikaaaa on 26/05/20
  */
-
 class CoordCheck: AbstractCheck("CoordCheck") {
-    //1.12.2 x and z coordinate names. idk how to check for all versions since obfuscation changes each version :c
     private val coordnames = arrayOf(
-        "field_70165_t",
-        "field_70161_v"
+        "field_148990_b", // 1.8.9 posX
+        "field_70165_t", // 1.8.9 posX
+        "field_75646_b", // 1.8.9 posX
+        "field_75656_e", // 1.8.9 posX
+        "field_148988_d", // 1.8.9 posZ
+        "field_70161_v", // 1.8.9 posZ
+        "field_75644_d", // 1.8.9 posZ
+        "field_75654_g", // 1.8.9 posZ
+        "field_70165_t", // 1.12.2 posX
+        "field_70161_v", // 1.12.2 posZ
+        "field_148990_b", // 1.13.2 posX
+        "field_148988_d", // 1.13.2 posZ
+        "field_148990_b", // 1.14.4 posX
+        "field_148988_d", // 1.14.4 posZ
+        "field_148990_b", // 1.15 posX
+        "field_148988_d" // 1.15 posZ
     )
 
     override fun run(program: Program) {
