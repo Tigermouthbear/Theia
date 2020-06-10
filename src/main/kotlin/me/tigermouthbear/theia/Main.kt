@@ -7,7 +7,7 @@ import java.io.File
  * @author Tigermouthbear
  * 4/10/20
  *
- * Updated by GiantNuker on 6/9/2020
+ * Updated by GiantNuker on 6/10/2020
  */
 
 fun main(args: Array<String>) {
@@ -16,8 +16,13 @@ fun main(args: Array<String>) {
 		return
 	}
 
-	println(
-		"\n" +
+	when(args.size) {
+		0 -> GUI.open()
+		1 -> print(Theia.run(File(args[0]), args[1].split(",")))
+		2 -> print(Theia.run(File(args[0]), listOf()))
+	}
+
+	log(
 				"___________.__           .__        \n" +
 				"\\__    ___/|  |__   ____ |__|____   \n" +
 				"  |    |   |  |  \\_/ __ \\|  \\__  \\  \n" +
@@ -25,11 +30,7 @@ fun main(args: Array<String>) {
 				"  |____|   |___|  /\\___  >__(____  /\n" +
 				"                \\/     \\/        \\/ \n"
 	)
-	println("Created by Tigermouthbear\n")
-
-	when(args.size) {
-		0 -> GUI.open()
-		1 -> print(Theia.run(File(args[0]), args[1].split(",")))
-		2 -> print(Theia.run(File(args[0]), listOf()))
-	}
+	log("Created by Tigermouthbear")
+	log("With contributions from")
+	log("GiantNuker, Crystalinqq, and Dominika\n")
 }

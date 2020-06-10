@@ -2,119 +2,187 @@ package me.tigermouthbear.theia.gui
 
 import li.flor.nativejfilechooser.NativeJFileChooser
 import me.tigermouthbear.theia.Theia
-import java.awt.BorderLayout.CENTER
-import java.awt.BorderLayout.NORTH
-import java.awt.Component
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
-import java.awt.Image
+import java.awt.*
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.swing.*
-
+import javax.swing.table.DefaultTableModel
 
 /**
- * @author Tigermouthbear
- * 4/27/20
- *
- * Updated by GiantNuker 6/9/2020
+ * @author GiantNuker
+ * 6/10/2020
  */
-
 object GUI: JFrame("Theia") {
-	private val defaultExclusions: List<String> = listOf(
-		"org/reflections/",
-		"javassist/",
-		"com/sun/jna/",
-		"org/spongepowered/"
-	)
+    private val exclusions = mutableListOf(
+        "org/reflections/",
+        "javassist/",
+        "com/sun/jna/",
+        "org/spongepowered/"
+    )
+    lateinit var fileIndicator: JLabel
+    lateinit var fileSelectButton: JButton
+    lateinit var runButton: JButton
+    lateinit var tabs: JTabbedPane
+    lateinit var logPanel: JTextArea
+    lateinit var oldOutputPanel: JTextArea
+    lateinit var tableOutputPanel: JPanel
+    lateinit var excludeLibraries: JCheckBox
+    lateinit var exclusionsBox: JTextArea
+    lateinit var file: File
+    var runOnce = false
+    private val cachedExec: Executor = Executors.newCachedThreadPool()
+    fun addElements() {
+        layout = BorderLayout()
 
-	private val cachedExec: Executor = Executors.newCachedThreadPool()
+        val header = JPanel()
+        header.layout = BoxLayout(header, BoxLayout.X_AXIS)
 
-	lateinit var file: File
-	lateinit var fileLabel: JLabel
-	lateinit var checkbox: JCheckBox
-	lateinit var runButton: JButton
+        var label = JLabel(ImageIcon(ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT)))
+        header.add(label)
 
-	fun open() {
-		// set look and feel
-		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+        val fileBox = JPanel()
+        fileBox.layout = BoxLayout(fileBox, BoxLayout.Y_AXIS)
 
-		addElements()
+        fileIndicator = JLabel("File: NONE")
+        fileBox.add(fileIndicator)
 
-		iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image
-		defaultCloseOperation = EXIT_ON_CLOSE
-		pack() // pack elements
-		setSize(650, 400)
-		isVisible = true // set visible
-	}
+        fileSelectButton = JButton("Select File")
+        fileSelectButton.addActionListener {e ->
+            val fileChooser = NativeJFileChooser()
+            if (fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
+                file = fileChooser.selectedFile
+                fileIndicator.text = "File: ${file!!.name}"
+                runButton.isEnabled = true
+            }
+        }
+        fileBox.add(fileSelectButton)
 
-	fun addElements() {
-		// create contentPanel
-		val contentPanel = JPanel(GridBagLayout())
+        runButton = JButton("Run Theia")
+        runButton.isEnabled = false
+        runButton.addActionListener {
+            if(runButton.text != "Running...") {
+                if(::file.isInitialized) {
+                    runButton.text = "Running..."
+                    runButton.isEnabled = false
+                    cachedExec.execute {
+                        oldOutputPanel.text = "Running..."
+                        tableOutputPanel.removeAll()
+                        val panel = JPanel()
+                        panel.layout = BorderLayout()
+                        panel.add(JLabel("Running..."), BorderLayout.WEST)
+                        tableOutputPanel.add(panel)
+                        tabs.selectedIndex = 0
+                        exclusions.clear()
+                        exclusionsBox.text.split("\n").filter { !it.isBlank() }.forEach { exclusions.add(it) }
+                        Theia.run(file, if (excludeLibraries.isSelected) exclusions else listOf())
+                        runButton.isEnabled = true
+                        runButton.text = "Run Theia"
+                        finish()
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
+                }
+            }
+        }
+        fileBox.add(runButton)
+        excludeLibraries = JCheckBox("Exclude Libraries")
+        excludeLibraries.isSelected = true
+        fileBox.add(excludeLibraries)
 
-		// add file label to topPanel
-		val topPanel = JPanel()
-		fileLabel = JLabel("File: NONE")
-		topPanel.add(fileLabel)
+        exclusionsBox = JTextArea()
+        for (defaultExclusion in exclusions) {
+            exclusionsBox.text += "$defaultExclusion\n"
+        }
+        fileBox.add(scrollPanel(exclusionsBox))
 
-		// add open button to topPanel
-		val fileButton = JButton("Open File")
-		fileButton.addActionListener {e ->
-			val fileChooser = NativeJFileChooser()
-			if (fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
-				file = fileChooser.selectedFile
-				fileLabel.text = file.name
-			}
-		}
-		topPanel.add(fileButton)
+        header.add(fileBox)
+        add(header, BorderLayout.NORTH)
 
-		//add topPanel to contentPanel
-		val c = GridBagConstraints()
-		c.fill = GridBagConstraints.HORIZONTAL
-		c.weightx = 0.5
-		c.gridx = 0
-		c.gridy = 0
-		contentPanel.add(topPanel, c)
+        logPanel = JTextArea()
+        logPanel.isEditable = false
+        oldOutputPanel = JTextArea()
+        oldOutputPanel.isEditable = false
+        tableOutputPanel = JPanel()
+        tableOutputPanel.layout = BoxLayout(tableOutputPanel, BoxLayout.Y_AXIS)
 
-		val midPanel = JPanel()
-		checkbox = JCheckBox("Exclude libraries")
-		checkbox.isSelected = true
-		midPanel.add(checkbox)
+        tabs = JTabbedPane()
+        tabs.add("Log", scrollPanel(logPanel))
+        add(tabs, BorderLayout.CENTER)
+    }
+    fun scrollPanel(component: Component): JScrollPane {
+        val scrollPane = JScrollPane(component)
+        scrollPane.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
+        scrollPane.horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        scrollPane.autoscrolls = true
+        return scrollPane
+    }
+    fun finish() {
+        if (!runOnce) {
+            runOnce = true
+            tabs.add("Table", scrollPanel(tableOutputPanel))
+            tabs.add("Text", scrollPanel(oldOutputPanel))
+        }
+        finishTypeTable()
+        oldOutputPanel.scrollRectToVisible(Rectangle(0, 0))
+        oldOutputPanel.text = Theia.log
+        tabs.selectedIndex = 1
+    }
+    fun finishTypeTable() {
+        tableOutputPanel.removeAll()
+        val widthArray = arrayOf(0, 0, 0)
+        val tableModels = arrayOfNulls<DefaultTableModel>(Theia.checks.size)
+        for ((index, check) in Theia.checks.withIndex()) {
+            val model = DefaultTableModel(0, 3)
+            for (possible in check.possibles) {
+                model.addRow(arrayOf(possible.severity.name, possible.clazz, possible.description))
+                if (JLabel(possible.severity.name).preferredSize.width > widthArray[0]) widthArray[0] = JLabel(possible.severity.name).preferredSize.width
+                if (JLabel(possible.clazz).preferredSize.width > widthArray[1]) widthArray[1] = JLabel(possible.clazz).preferredSize.width
+                if (JLabel(possible.description).preferredSize.width > widthArray[2]) widthArray[2] = JLabel(possible.description).preferredSize.width
+            }
+            tableModels[index] = model
+        }
+        for (i in 0..Theia.checks.lastIndex) {
+            val model = tableModels[i]!!
+            val table = object : JTable(model) {
+                override fun isCellEditable(row: Int, column: Int) = false
+            }
+            var j = 0
+            for (column in table.columnModel.columns) {
+                column.minWidth = widthArray[j] + 20
+                column
+                j++
+            }
+            val panel = JPanel()
+            panel.layout = BorderLayout()
+            panel.add(JLabel("${Theia.checks[i].name} - ${Theia.checks[i].desc}"), BorderLayout.WEST)
+            tableOutputPanel.add(panel)
+            if (Theia.checks[i].possibles.isEmpty()) {
+                panel.add(JLabel(" - Passed check"), BorderLayout.SOUTH)
+            } else {
+                tableOutputPanel.add(table)
+            }
+        }
+    }
+    fun open() {
+        // set look and feel
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
-		// add midPanel to contentPanel
-		c.fill = GridBagConstraints.HORIZONTAL
-		c.weightx = 0.5
-		c.gridx = 0
-		c.gridy = 1
-		contentPanel.add(midPanel, c)
+        addElements()
 
-		// add run button to botPanel
-		val botPanel = JPanel()
-		runButton = JButton("Run")
-		runButton.addActionListener {
-			if(runButton.text != "Running...") {
-				if(::file.isInitialized) {
-					runButton.text = "Running..."
-					cachedExec.execute { ResultsFrame().open(Theia.run(file, if(checkbox.isSelected) defaultExclusions else listOf())) }
-				} else {
-					JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
-				}
-			}
-		}
-		botPanel.add(runButton)
-
-		// add botPanel to contentPanel
-		c.fill = GridBagConstraints.HORIZONTAL
-		c.weightx = 0.5
-		c.gridx = 0
-		c.gridy = 2
-		contentPanel.add(botPanel, c)
-
-		// add contentPanel to frame
-		add(contentPanel, CENTER)
-
-		// add logo to frame
-		add(JLabel(ImageIcon(ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT))), NORTH)
-	}
+        iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image
+        defaultCloseOperation = EXIT_ON_CLOSE
+        //GUI.pack() // pack elements
+        setSize(850, 700)
+        setLocationRelativeTo(null)
+        isVisible = true // set visible
+    }
+    var lastLogHeight = 0
+    fun log(text: String) {
+        logPanel.text = if (text.startsWith("\r")) logPanel.text.substringBeforeLast('\n') + '\n' + text else logPanel.text + '\n' + text
+        if (logPanel.height > lastLogHeight && logPanel.visibleRect.y + logPanel.visibleRect.height > lastLogHeight - 80) {
+            logPanel.scrollRectToVisible(Rectangle(0, logPanel.height, 0, 0))
+        }
+        lastLogHeight = logPanel.height
+    }
 }

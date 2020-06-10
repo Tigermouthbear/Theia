@@ -8,9 +8,11 @@ import org.objectweb.asm.tree.MethodInsnNode
 /**
  * @author Tigermouthbear
  * 4/15/20
+ *
+ * Updated by GiantNuker 6/10/2020
  */
 
-class FileDeletionCheck: AbstractCheck("FileDeletionCheck") {
+class FileDeletionCheck: AbstractCheck("FileDeletionCheck", "File deleted") {
 	private val methods = arrayOf(
 		"java/io/File:delete:()Z",
 		"java/nio/file/Files:deleteIfExists:(Ljava/nio/file/Path;)Z"
