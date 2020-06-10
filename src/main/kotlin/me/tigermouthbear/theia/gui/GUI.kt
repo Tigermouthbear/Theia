@@ -1,5 +1,6 @@
 package me.tigermouthbear.theia.gui
 
+import li.flor.nativejfilechooser.NativeJFileChooser
 import me.tigermouthbear.theia.Theia
 import java.awt.BorderLayout.CENTER
 import java.awt.BorderLayout.NORTH
@@ -60,8 +61,8 @@ object GUI: JFrame("Theia") {
 		// add open button to topPanel
 		val fileButton = JButton("Open File")
 		fileButton.addActionListener {e ->
-			val fileChooser = JFileChooser()
-			if (fileChooser.showOpenDialog(e.source as Component?) == JFileChooser.APPROVE_OPTION) {
+			val fileChooser = NativeJFileChooser()
+			if (fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
 				file = fileChooser.selectedFile
 				fileLabel.text = file.name
 			}
