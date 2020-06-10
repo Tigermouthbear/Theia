@@ -3,10 +3,7 @@ package dev.tigr.theia.checks
 import dev.tigr.theia.Possible
 import dev.tigr.theia.Program
 import dev.tigr.theia.Theia
-import org.objectweb.asm.tree.LdcInsnNode
-import org.objectweb.asm.tree.MethodInsnNode
-import org.objectweb.asm.tree.MethodNode
-import org.objectweb.asm.tree.TypeInsnNode
+import org.objectweb.asm.tree.*
 
 /**
  * @author Tigermouthbear
@@ -17,6 +14,7 @@ import org.objectweb.asm.tree.TypeInsnNode
  */
 
 object URLCheck: AbstractCheck("URLCheck", "URL created") {
+	var classes: MutableList<ClassNode> = mutableListOf()
 	var methods: MutableList<MethodNode> = mutableListOf()
 
 	override fun run(program: Program) {
