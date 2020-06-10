@@ -2,6 +2,8 @@ package me.tigermouthbear.theia
 
 import me.tigermouthbear.theia.checks.*
 import java.io.File
+import java.lang.Thread.sleep
+import kotlin.concurrent.thread
 
 /**
  * @author Tigermouthbear
@@ -21,9 +23,40 @@ object Theia {
 		val program = Program(file)
 		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck(), ClassloadCheck())
 		val out = StringBuilder()
-
+		var completionIndex = -1
+		var checkName = ""
+		var mStartTime = 0L
+		var active = false
+		thread(start = true) {
+			while (true) {
+				sleep(10)
+				if (active) {
+					if (completionIndex == -1) {
+						print("\rProcessing: ${file.name}")
+					} else if (completionIndex < checks.size) {
+						print("\r${completionIndex + 1}/${checks.size} - $checkName [${System.currentTimeMillis() - mStartTime}ms]")
+					}
+				}
+				if (completionIndex == checks.size) {
+					break
+				}
+			}
+		}
+		println("Processing: ${file.name}")
 		// run checks
-		checks.forEach { check -> check.run(program) }
+		checks.forEach { check ->
+			completionIndex = checks.indexOf(check)
+			checkName = check.name
+			print("\r${completionIndex + 1}/${checks.size} - $checkName [0ms]")
+			mStartTime = System.currentTimeMillis()
+			active = true
+			//print("\r${String.format("%.1f", (checks.indexOf(check).toDouble()/checks.size) * 100.0)}% - Running Check: ${check.name}")
+			check.run(program)
+			active = false
+			println("\r${completionIndex + 1}/${checks.size} - $checkName [${System.currentTimeMillis() - mStartTime}ms]")
+		}
+		completionIndex = checks.size
+		println("Done in ${System.currentTimeMillis() - startTime}ms")
 
 		// print checks
 		checks.forEach { check ->
