@@ -6,6 +6,8 @@ import java.io.File
 /**
  * @author Tigermouthbear
  * 4/10/20
+ *
+ * Updated by GiantNuker 6/9/2020
  */
 
 object Theia {
@@ -17,7 +19,7 @@ object Theia {
 		this.exclusions = exclusions
 
 		val program = Program(file)
-		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck())
+		val checks: Array<AbstractCheck> = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck(), ClassloadCheck())
 		val out = StringBuilder()
 
 		// run checks
