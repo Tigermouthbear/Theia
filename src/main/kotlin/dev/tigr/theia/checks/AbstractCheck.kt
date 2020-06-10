@@ -1,7 +1,7 @@
-package me.tigermouthbear.theia.checks
+package dev.tigr.theia.checks
 
-import me.tigermouthbear.theia.Possible
-import me.tigermouthbear.theia.Program
+import dev.tigr.theia.Possible
+import dev.tigr.theia.Program
 import org.objectweb.asm.tree.MethodInsnNode
 
 /**

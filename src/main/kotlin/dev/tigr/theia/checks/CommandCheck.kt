@@ -1,21 +1,21 @@
-package me.tigermouthbear.theia.checks
+package dev.tigr.theia.checks
 
-import me.tigermouthbear.theia.Possible
-import me.tigermouthbear.theia.Program
-import me.tigermouthbear.theia.Theia
+import dev.tigr.theia.Possible
+import dev.tigr.theia.Program
+import dev.tigr.theia.Theia
 import org.objectweb.asm.tree.MethodInsnNode
 
 /**
  * @author Tigermouthbear
- * 4/15/20
+ * 4/13/20
  *
  * Updated by GiantNuker 6/10/2020
  */
 
-object FileDeletionCheck: AbstractCheck("FileDeletionCheck", "File deleted") {
-	private val methods = arrayOf(
-		"java/io/File:delete:()Z",
-		"java/nio/file/Files:deleteIfExists:(Ljava/nio/file/Path;)Z"
+object CommandCheck: AbstractCheck("CommandCheck", "Executes a system command") {
+	val methods = arrayOf(
+		"java/lang/Runtime:exec:(Ljava/lang/String;)Ljava/lang/Process;",
+		"java/lang/ProcessBuilder:command:([Ljava/lang/String;)Ljava/lang/ProcessBuilder;"
 	)
 
 	override fun run(program: Program) {
@@ -26,8 +26,8 @@ object FileDeletionCheck: AbstractCheck("FileDeletionCheck", "File deleted") {
 					if(insn is MethodInsnNode && methods.contains(format(insn))) {
 						possibles.add(
 							Possible(
-								Possible.Severity.WARN,
-								"Found file deletion",
+								Possible.Severity.ALERT,
+								"Shell command executed",
 								cn.name
 							)
 						)

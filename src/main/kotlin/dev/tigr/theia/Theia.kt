@@ -1,7 +1,7 @@
-package me.tigermouthbear.theia
+package dev.tigr.theia
 
-import me.tigermouthbear.theia.checks.*
-import me.tigermouthbear.theia.gui.GUI
+import dev.tigr.theia.checks.*
+import dev.tigr.theia.gui.GUI
 import java.io.File
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
@@ -21,8 +21,15 @@ object Theia {
 
     fun run(file: File, exclusions: List<String>) {
         val startTime = System.currentTimeMillis()
-        checks = arrayOf(ConnectionCheck, URLCheck, CommandCheck, FileDeletionCheck, CoordCheck, ClassloadCheck)
-        this.exclusions = exclusions
+        checks = arrayOf(
+            ConnectionCheck,
+            URLCheck,
+            CommandCheck,
+            FileDeletionCheck,
+            CoordCheck,
+            ClassloadCheck
+        )
+        Theia.exclusions = exclusions
 
         val program = Program(file)
         val out = StringBuilder()

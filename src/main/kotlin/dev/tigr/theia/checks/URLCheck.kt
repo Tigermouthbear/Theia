@@ -1,8 +1,8 @@
-package me.tigermouthbear.theia.checks
+package dev.tigr.theia.checks
 
-import me.tigermouthbear.theia.Possible
-import me.tigermouthbear.theia.Program
-import me.tigermouthbear.theia.Theia
+import dev.tigr.theia.Possible
+import dev.tigr.theia.Program
+import dev.tigr.theia.Theia
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
@@ -30,7 +30,10 @@ object URLCheck: AbstractCheck("URLCheck", "URL created") {
 							possibles.add(
 								Possible(
 									Possible.Severity.WARN,
-									"Found URL [" + getURL(insn, program) + "]",
+									"Found URL [" + getURL(
+										insn,
+										program
+									) + "]",
 									cn.name
 								)
 							)

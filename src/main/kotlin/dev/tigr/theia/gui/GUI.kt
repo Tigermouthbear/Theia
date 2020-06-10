@@ -1,7 +1,7 @@
-package me.tigermouthbear.theia.gui
+package dev.tigr.theia.gui
 
 import li.flor.nativejfilechooser.NativeJFileChooser
-import me.tigermouthbear.theia.Theia
+import dev.tigr.theia.Theia
 import java.awt.*
 import java.io.File
 import java.util.concurrent.Executor
@@ -48,11 +48,11 @@ object GUI: JFrame("Theia") {
         fileBox.add(fileIndicator)
 
         fileSelectButton = JButton("Select File")
-        fileSelectButton.addActionListener {e ->
+        fileSelectButton.addActionListener { e ->
             val fileChooser = NativeJFileChooser()
             if (fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
                 file = fileChooser.selectedFile
-                fileIndicator.text = "File: ${file!!.name}"
+                fileIndicator.text = "File: ${file.name}"
                 runButton.isEnabled = true
             }
         }
@@ -62,7 +62,7 @@ object GUI: JFrame("Theia") {
         runButton.isEnabled = false
         runButton.addActionListener {
             if(runButton.text != "Running...") {
-                if(::file.isInitialized) {
+                if(GUI::file.isInitialized) {
                     runButton.text = "Running..."
                     runButton.isEnabled = false
                     cachedExec.execute {
@@ -107,7 +107,9 @@ object GUI: JFrame("Theia") {
         tableOutputPanel.layout = BoxLayout(tableOutputPanel, BoxLayout.Y_AXIS)
 
         tabs = JTabbedPane()
-        tabs.add("Log", scrollPanel(logPanel))
+        tabs.add("Log",
+            scrollPanel(logPanel)
+        )
         add(tabs, BorderLayout.CENTER)
     }
     fun scrollPanel(component: Component): JScrollPane {
@@ -120,8 +122,12 @@ object GUI: JFrame("Theia") {
     fun finish() {
         if (!runOnce) {
             runOnce = true
-            tabs.add("Table", scrollPanel(tableOutputPanel))
-            tabs.add("Text", scrollPanel(oldOutputPanel))
+            tabs.add("Table",
+                scrollPanel(tableOutputPanel)
+            )
+            tabs.add("Text",
+                scrollPanel(oldOutputPanel)
+            )
         }
         finishTypeTable()
         oldOutputPanel.scrollRectToVisible(Rectangle(0, 0))
@@ -150,7 +156,6 @@ object GUI: JFrame("Theia") {
             var j = 0
             for (column in table.columnModel.columns) {
                 column.minWidth = widthArray[j] + 20
-                column
                 j++
             }
             val panel = JPanel()

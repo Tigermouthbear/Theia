@@ -1,4 +1,4 @@
-package me.tigermouthbear.theia
+package dev.tigr.theia
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode

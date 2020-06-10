@@ -1,6 +1,6 @@
-package me.tigermouthbear.theia
+package dev.tigr.theia
 
-import me.tigermouthbear.theia.gui.GUI
+import dev.tigr.theia.gui.GUI
 import java.io.File
 
 /**
@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
 	}
 
 	log(
-				"___________.__           .__        \n" +
+		"___________.__           .__        \n" +
 				"\\__    ___/|  |__   ____ |__|____   \n" +
 				"  |    |   |  |  \\_/ __ \\|  \\__  \\  \n" +
 				"  |    |   |   Y  \\  ___/|  |/ __ \\_\n" +
