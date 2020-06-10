@@ -12,7 +12,7 @@ import org.objectweb.asm.tree.FieldInsnNode
  * Updated by dominikaaaa on 26/05/
  * Updated by GiantNuker 6/10/2020
  */
-class CoordCheck: AbstractCheck("CoordCheck", "A coordinate was referenced. This most likely is NOT a backdoor") {
+object CoordCheck: AbstractCheck("CoordCheck", "A coordinate was referenced. This most likely is NOT a backdoor") {
     private val coordnames = arrayOf(
         "field_148990_b", // 1.8.9 posX
         "field_70165_t", // 1.8.9 posX

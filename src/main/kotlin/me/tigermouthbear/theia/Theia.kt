@@ -21,7 +21,7 @@ object Theia {
 
     fun run(file: File, exclusions: List<String>) {
         val startTime = System.currentTimeMillis()
-        checks = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck(), ClassloadCheck())
+        checks = arrayOf(ConnectionCheck, URLCheck, CommandCheck, FileDeletionCheck, CoordCheck, ClassloadCheck)
         this.exclusions = exclusions
 
         val program = Program(file)

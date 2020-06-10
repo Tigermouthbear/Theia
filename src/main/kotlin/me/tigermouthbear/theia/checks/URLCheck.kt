@@ -5,6 +5,7 @@ import me.tigermouthbear.theia.Program
 import me.tigermouthbear.theia.Theia
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.TypeInsnNode
 
 /**
@@ -12,13 +13,17 @@ import org.objectweb.asm.tree.TypeInsnNode
  * 4/11/20
  *
  * Updated by GiantNuker 6/10/2020
+ * Improved speed -Tigermouthbear 6/10/2020
  */
 
-class URLCheck: AbstractCheck("URLCheck", "URL created") {
+object URLCheck: AbstractCheck("URLCheck", "URL created") {
+	var methods: MutableList<MethodNode> = mutableListOf()
+
 	override fun run(program: Program) {
 		for(cn in program.getClassNodes().values) {
 			if(Theia.isExcluded(cn.name)) continue
 			for(mn in cn.methods) {
+				if(!methods.contains(mn)) continue
 				for(insn in mn.instructions) {
 					if(insn is TypeInsnNode) {
 						if(insn.desc == "java/net/URL") {
@@ -36,7 +41,6 @@ class URLCheck: AbstractCheck("URLCheck", "URL created") {
 		}
 	}
 
-	//TODO: Make URL parsing better
 	private fun getURL(target: TypeInsnNode, program: Program): String {
 		var out = ""
 		var looking = false

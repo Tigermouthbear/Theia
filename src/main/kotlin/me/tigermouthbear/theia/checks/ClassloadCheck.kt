@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.MethodInsnNode
  * @author GiantNuker
  * 6/9/2020
  */
-class ClassloadCheck : AbstractCheck("ClassloadCheck", "Dynamically loads a class (can bypass other checks)") {
+object ClassloadCheck : AbstractCheck("ClassloadCheck", "Dynamically loads a class (can bypass other checks)") {
     override fun run(program: Program) {
         var lastLdc: LdcInsnNode? = null
         for (cn in program.getClassNodes().values) {

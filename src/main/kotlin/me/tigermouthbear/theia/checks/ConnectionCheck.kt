@@ -13,7 +13,7 @@ import org.objectweb.asm.tree.TypeInsnNode
  * Updated by GiantNuker 6/10/2020
  */
 
-class ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connection") {
+object ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connection") {
 	private val types = arrayOf(
 		"java/net/HttpURLConnection",
 		"java/net/HttpsURLConnection",
@@ -44,6 +44,7 @@ class ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connect
 								cn.name
 							)
 						)
+						URLCheck.methods.add(mn)
 					} else if(insn is MethodInsnNode && methods.contains(format(insn))) {
 						possibles.add(
 							Possible(
@@ -52,6 +53,7 @@ class ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connect
 								cn.name
 							)
 						)
+						URLCheck.methods.add(mn)
 					}
 				}
 			}
