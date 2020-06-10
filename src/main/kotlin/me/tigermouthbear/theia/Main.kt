@@ -7,7 +7,7 @@ import java.io.File
  * @author Tigermouthbear
  * 4/10/20
  *
- * Updated by GiantNuker on 6/9/2020
+ * Updated by GiantNuker on 6/10/2020
  */
 
 fun main(args: Array<String>) {
@@ -30,5 +30,7 @@ fun main(args: Array<String>) {
 				"  |____|   |___|  /\\___  >__(____  /\n" +
 				"                \\/     \\/        \\/ \n"
 	)
-	log("Created by Tigermouthbear\n")
+	log("Created by Tigermouthbear")
+	log("With contributuins from")
+	log("GiantNuker, Crystalinqq, and Dominika\n")
 }
