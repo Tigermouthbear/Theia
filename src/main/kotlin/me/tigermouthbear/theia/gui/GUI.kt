@@ -16,6 +16,8 @@ import javax.swing.*
 /**
  * @author Tigermouthbear
  * 4/27/20
+ *
+ * Updated by GiantNuker 6/9/2020
  */
 
 object GUI: JFrame("Theia") {
@@ -93,7 +95,7 @@ object GUI: JFrame("Theia") {
 			if(runButton.text != "Running...") {
 				if(::file.isInitialized) {
 					runButton.text = "Running..."
-					cachedExec.execute { ResultsFrame.open(Theia.run(file, if(checkbox.isSelected) defaultExclusions else listOf())) }
+					cachedExec.execute { ResultsFrame().open(Theia.run(file, if(checkbox.isSelected) defaultExclusions else listOf())) }
 				} else {
 					JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
 				}

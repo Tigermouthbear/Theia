@@ -7,9 +7,11 @@ import javax.swing.*
 /**
  * @author Tigermouthbear
  * 4/27/20
+ *
+ * Updated by GiantNuker on 6/9/2020
  */
 
-object ResultsFrame: JFrame("Theia Results") {
+class ResultsFrame: JFrame("Theia Results") {
 	fun open(output: String) {
 		// set look and feel
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
