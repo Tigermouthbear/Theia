@@ -44,8 +44,7 @@ object ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connec
 								cn.name
 							)
 						)
-						URLCheck.methods.add(mn)
-						URLCheck.classes.add(cn)
+						URLCheck.methods[mn] = cn.name
 					} else if(insn is MethodInsnNode && methods.contains(format(insn))) {
 						possibles.add(
 							Possible(
@@ -54,8 +53,7 @@ object ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connec
 								cn.name
 							)
 						)
-						URLCheck.methods.add(mn)
-						URLCheck.classes.add(cn)
+						URLCheck.methods[mn] = cn.name
 					}
 				}
 			}

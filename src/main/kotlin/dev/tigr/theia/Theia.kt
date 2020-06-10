@@ -14,21 +14,21 @@ import kotlin.concurrent.thread
  */
 
 object Theia {
+    val overviewMap: MutableMap<String, ArrayList<AbstractCheck>> = hashMapOf()
+    val checks: Array<AbstractCheck> = arrayOf(
+        ConnectionCheck,
+        URLCheck,
+        CommandCheck,
+        FileDeletionCheck,
+        CoordCheck,
+        ClassloadCheck
+    )
+
     private lateinit var exclusions: List<String>
     lateinit var log: String
 
-    lateinit var checks: Array<AbstractCheck>
-
     fun run(file: File, exclusions: List<String>) {
         val startTime = System.currentTimeMillis()
-        checks = arrayOf(
-            ConnectionCheck,
-            URLCheck,
-            CommandCheck,
-            FileDeletionCheck,
-            CoordCheck,
-            ClassloadCheck
-        )
         Theia.exclusions = exclusions
 
         val program = Program(file)
@@ -84,7 +84,6 @@ object Theia {
         }
 
         // generate overview map
-        val overviewMap: MutableMap<String, ArrayList<AbstractCheck>> = hashMapOf()
         checks.forEach { check ->
             check.possibles.forEach { possible ->
                 if (overviewMap.containsKey(possible.clazz) && !overviewMap[possible.clazz]!!.contains(check)) overviewMap[possible.clazz]!!.add(

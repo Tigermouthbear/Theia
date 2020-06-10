@@ -2,7 +2,6 @@ package dev.tigr.theia.checks
 
 import dev.tigr.theia.Possible
 import dev.tigr.theia.Program
-import dev.tigr.theia.Theia
 import org.objectweb.asm.tree.*
 
 /**
@@ -14,14 +13,11 @@ import org.objectweb.asm.tree.*
  */
 
 object URLCheck: AbstractCheck("URLCheck", "URL created") {
-	var classes: MutableList<ClassNode> = mutableListOf()
-	var methods: MutableList<MethodNode> = mutableListOf()
+	var methods: MutableMap<MethodNode, String> = mutableMapOf()
 
 	override fun run(program: Program) {
-		for(cn in program.getClassNodes().values) {
-			if(Theia.isExcluded(cn.name) || !classes.contains(cn)) continue
-			for(mn in cn.methods) {
-				if(!methods.contains(mn)) continue
+		val thread = Thread {
+			for(mn in methods.keys) {
 				for(insn in mn.instructions) {
 					if(insn is TypeInsnNode) {
 						if(insn.desc == "java/net/URL") {
@@ -32,13 +28,23 @@ object URLCheck: AbstractCheck("URLCheck", "URL created") {
 										insn,
 										program
 									) + "]",
-									cn.name
+									methods[mn]!!
 								)
 							)
 						}
 					}
 				}
 			}
+		}
+		thread.start()
+		val startTime = System.currentTimeMillis()
+		while(thread.isAlive) {
+			if(System.currentTimeMillis() - startTime > 20000) {
+				thread.stop()
+				possibles.add(Possible(Possible.Severity.ALERT, "URL CHECK TIMED OUT", "URL CHECK TIMED OUT"))
+				return
+			}
+			Thread.sleep(10)
 		}
 	}
 
