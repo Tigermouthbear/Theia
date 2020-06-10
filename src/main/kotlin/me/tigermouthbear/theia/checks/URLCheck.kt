@@ -10,9 +10,11 @@ import org.objectweb.asm.tree.TypeInsnNode
 /**
  * @author Tigermouthbear
  * 4/11/20
+ *
+ * Updated by GiantNuker 6/10/2020
  */
 
-class URLCheck: AbstractCheck("URLCheck") {
+class URLCheck: AbstractCheck("URLCheck", "URL created") {
 	override fun run(program: Program) {
 		for(cn in program.getClassNodes().values) {
 			if(Theia.isExcluded(cn.name)) continue

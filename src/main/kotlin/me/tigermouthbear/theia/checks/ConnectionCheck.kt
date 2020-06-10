@@ -9,9 +9,11 @@ import org.objectweb.asm.tree.TypeInsnNode
 /**
  * @author Tigermouthbear
  * 4/11/20
+ *
+ * Updated by GiantNuker 6/10/2020
  */
 
-class ConnectionCheck: AbstractCheck("WebConnectionCheck") {
+class ConnectionCheck: AbstractCheck("WebConnectionCheck", "Any outgoing connection") {
 	private val types = arrayOf(
 		"java/net/HttpURLConnection",
 		"java/net/HttpsURLConnection",
