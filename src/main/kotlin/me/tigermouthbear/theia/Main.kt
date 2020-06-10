@@ -6,12 +6,13 @@ import java.io.File
 /**
  * @author Tigermouthbear
  * 4/10/20
+ *
+ * Updated by GiantNuker on 6/9/2020
  */
 
 fun main(args: Array<String>) {
 	if(args.size > 2) {
-		//TODO make help text
-		println("(HELP TEXT)")
+		println("java -jar theia.jar [file] [exclusions]")
 		return
 	}
 
