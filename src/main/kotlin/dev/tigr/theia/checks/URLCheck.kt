@@ -19,7 +19,7 @@ object URLCheck: AbstractCheck("URLCheck", "URL created") {
 
 	override fun run(program: Program) {
 		for(cn in program.getClassNodes().values) {
-			if(Theia.isExcluded(cn.name)) continue
+			if(Theia.isExcluded(cn.name) || !classes.contains(cn)) continue
 			for(mn in cn.methods) {
 				if(!methods.contains(mn)) continue
 				for(insn in mn.instructions) {
