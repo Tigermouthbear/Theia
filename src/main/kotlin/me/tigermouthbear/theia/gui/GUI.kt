@@ -4,20 +4,17 @@ import li.flor.nativejfilechooser.NativeJFileChooser
 import me.tigermouthbear.theia.Theia
 import java.awt.*
 import java.io.File
-import java.util.*
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
-import javax.swing.table.JTableHeader
-import javax.swing.table.TableModel
 
 /**
  * @author GiantNuker
  * 6/10/2020
  */
 object GUI: JFrame("Theia") {
-    private val defaultExclusions: List<String> = listOf(
+    private val exclusions = mutableListOf(
         "org/reflections/",
         "javassist/",
         "com/sun/jna/",
@@ -31,6 +28,7 @@ object GUI: JFrame("Theia") {
     lateinit var oldOutputPanel: JTextArea
     lateinit var tableOutputPanel: JPanel
     lateinit var excludeLibraries: JCheckBox
+    lateinit var exclusionsBox: JTextArea
     lateinit var file: File
     var runOnce = false
     private val cachedExec: Executor = Executors.newCachedThreadPool()
@@ -75,7 +73,9 @@ object GUI: JFrame("Theia") {
                         panel.add(JLabel("Running..."), BorderLayout.WEST)
                         tableOutputPanel.add(panel)
                         tabs.selectedIndex = 0
-                        Theia.run(file, if (excludeLibraries.isSelected) defaultExclusions else listOf())
+                        exclusions.clear()
+                        exclusionsBox.text.split("\n").filter { !it.isBlank() }.forEach { exclusions.add(it) }
+                        Theia.run(file, if (excludeLibraries.isSelected) exclusions else listOf())
                         runButton.isEnabled = true
                         runButton.text = "Run Theia"
                         finish()
@@ -90,7 +90,12 @@ object GUI: JFrame("Theia") {
         excludeLibraries.isSelected = true
         fileBox.add(excludeLibraries)
 
-        fileBox.add(Box.createVerticalGlue())
+        exclusionsBox = JTextArea()
+        for (defaultExclusion in exclusions) {
+            exclusionsBox.text += "$defaultExclusion\n"
+        }
+        fileBox.add(scrollPanel(exclusionsBox))
+
         header.add(fileBox)
         add(header, BorderLayout.NORTH)
 
