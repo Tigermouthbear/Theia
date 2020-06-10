@@ -31,6 +31,6 @@ fun main(args: Array<String>) {
 				"                \\/     \\/        \\/ \n"
 	)
 	log("Created by Tigermouthbear")
-	log("With contributuins from")
+	log("With contributions from")
 	log("GiantNuker, Crystalinqq, and Dominika\n")
 }

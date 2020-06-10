@@ -17,12 +17,11 @@ object Theia {
     private lateinit var exclusions: List<String>
     lateinit var log: String
 
-    val checks: Array<AbstractCheck> =
-        arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck(), ClassloadCheck())
+    lateinit var checks: Array<AbstractCheck>
 
     fun run(file: File, exclusions: List<String>) {
         val startTime = System.currentTimeMillis()
-
+        checks = arrayOf(ConnectionCheck(), URLCheck(), CommandCheck(), FileDeletionCheck(), CoordCheck(), ClassloadCheck())
         this.exclusions = exclusions
 
         val program = Program(file)

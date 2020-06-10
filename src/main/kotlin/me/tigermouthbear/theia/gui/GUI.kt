@@ -30,6 +30,7 @@ object GUI: JFrame("Theia") {
     lateinit var logPanel: JTextArea
     lateinit var oldOutputPanel: JTextArea
     lateinit var tableOutputPanel: JPanel
+    lateinit var excludeLibraries: JCheckBox
     lateinit var file: File
     var runOnce = false
     private val cachedExec: Executor = Executors.newCachedThreadPool()
@@ -74,7 +75,7 @@ object GUI: JFrame("Theia") {
                         panel.add(JLabel("Running..."), BorderLayout.WEST)
                         tableOutputPanel.add(panel)
                         tabs.selectedIndex = 0
-                        Theia.run(file, listOf())
+                        Theia.run(file, if (excludeLibraries.isSelected) defaultExclusions else listOf())
                         runButton.isEnabled = true
                         runButton.text = "Run Theia"
                         finish()
@@ -85,6 +86,9 @@ object GUI: JFrame("Theia") {
             }
         }
         fileBox.add(runButton)
+        excludeLibraries = JCheckBox("Exclude Libraries")
+        excludeLibraries.isSelected = true
+        fileBox.add(excludeLibraries)
 
         fileBox.add(Box.createVerticalGlue())
         header.add(fileBox)
