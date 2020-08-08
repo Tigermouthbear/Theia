@@ -41,7 +41,7 @@ object CoordCheck: AbstractCheck("CoordCheck", "A coordinate was referenced. Thi
                         possibles.add(
                             Possible(
                                 Possible.Severity.WARN,
-                                "X or Z coordinates grabbed(1.12.2)",
+                                "X or Z coordinates grabbed",
                                 cn.name
                             )
                         )

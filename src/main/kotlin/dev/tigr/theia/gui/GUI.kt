@@ -38,7 +38,7 @@ object GUI: JFrame("Theia") {
         val header = JPanel()
         header.layout = BoxLayout(header, BoxLayout.X_AXIS)
 
-        var label = JLabel(ImageIcon(ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT)))
+        val label = JLabel(ImageIcon(ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT)))
         header.add(label)
 
         val fileBox = JPanel()
@@ -63,6 +63,9 @@ object GUI: JFrame("Theia") {
         runButton.addActionListener {
             if(runButton.text != "Running...") {
                 if(GUI::file.isInitialized) {
+                    // clear previous possibles
+                    Theia.checks.forEach { it.possibles.clear() }
+
                     runButton.text = "Running..."
                     runButton.isEnabled = false
                     cachedExec.execute {
