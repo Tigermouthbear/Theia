@@ -17,8 +17,8 @@ object ClassloadCheck : AbstractCheck("ClassloadCheck", "Dynamically loads a cla
     override fun run(program: Program) {
         for (cn in program.getClassNodes().values) {
             if (Theia.isExcluded(cn.name)) continue
-            cn.methods.forEach(Consumer { methodNode: MethodNode ->
-                methodNode.instructions.forEach(Consumer { ain: AbstractInsnNode ->
+            cn.methods.forEach { methodNode: MethodNode ->
+                methodNode.instructions.forEach { ain: AbstractInsnNode ->
                     if (ain is MethodInsnNode)  {
                         when(ain.name) {
                             "defineClass" ->
@@ -34,7 +34,7 @@ object ClassloadCheck : AbstractCheck("ClassloadCheck", "Dynamically loads a cla
                                 )
                         }
                     }
-                })
+                }
                 if (cn.superName == "java/lang/ClassLoader") {
                     possibles.add(
                         Possible(
@@ -48,7 +48,7 @@ object ClassloadCheck : AbstractCheck("ClassloadCheck", "Dynamically loads a cla
                         )
                     )
                 }
-            })
+            }
         }
     }
 }
