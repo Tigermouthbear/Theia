@@ -173,9 +173,6 @@ object GUI: JFrame("Theia") {
         }
     }
     fun open() {
-        // set look and feel
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-
         addElements()
 
         iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image

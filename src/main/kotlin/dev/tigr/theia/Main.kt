@@ -17,7 +17,13 @@ fun main(args: Array<String>) {
 	}
 
 	when(args.size) {
-		0 -> GUI.open()
+		0 -> {
+			// enable anti-aliasing
+			System.setProperty("awt.useSystemAAFontSettings", "on")
+			System.setProperty("swing.aatext", "true")
+
+			GUI.open()
+		}
 		1 -> print(Theia.run(File(args[0]), listOf()))
 		2 -> print(Theia.run(File(args[0]), args[1].split(",")))
 	}

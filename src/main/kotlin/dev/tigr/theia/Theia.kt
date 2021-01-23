@@ -25,11 +25,11 @@ object Theia {
     )
 
     private lateinit var exclusions: List<String>
-    lateinit var log: String
+    var log: String = ""
 
     fun run(file: File, exclusions: List<String>) {
         val startTime = System.currentTimeMillis()
-        Theia.exclusions = exclusions
+        this.exclusions = exclusions
 
         val program = Program(file)
         val out = StringBuilder()

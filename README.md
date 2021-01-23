@@ -1,5 +1,5 @@
 # Theia
-A Kotlin program used to analyse and discover backdoors in Java programs. This is still a WIP and should not be used except for testing yet
+A Kotlin program used to analyse and discover backdoors in Minecraft Java 1.12.2 forge mods. This is experimental and may have bypasses.
 
 ## Contributing
 Feel free to make a PR or to open an issue/feature request
