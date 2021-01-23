@@ -12,9 +12,8 @@ import kotlin.concurrent.thread
  *
  * Updated by GiantNuker 6/10/2020
  */
-
 object Theia {
-    val overviewMap: MutableMap<String, ArrayList<AbstractCheck>> = hashMapOf()
+    private val overviewMap: MutableMap<String, ArrayList<AbstractCheck>> = hashMapOf()
     val checks: Array<AbstractCheck> = arrayOf(
         ConnectionCheck,
         URLCheck,
@@ -61,7 +60,6 @@ object Theia {
             log("\r${completionIndex + 1}/${checks.size} - $checkName [0ms]")
             mStartTime = System.currentTimeMillis()
             active = true
-            //print("\r${String.format("%.1f", (checks.indexOf(check).toDouble()/checks.size) * 100.0)}% - Running Check: ${check.name}")
             check.run(program)
             active = false
             log("\r${completionIndex + 1}/${checks.size} - $checkName [${System.currentTimeMillis() - mStartTime}ms]")

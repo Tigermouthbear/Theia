@@ -1,8 +1,11 @@
 package dev.tigr.theia.gui
 
-import li.flor.nativejfilechooser.NativeJFileChooser
 import dev.tigr.theia.Theia
-import java.awt.*
+import li.flor.nativejfilechooser.NativeJFileChooser
+import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.Image
+import java.awt.Rectangle
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -18,7 +21,8 @@ object GUI: JFrame("Theia") {
         "org/reflections/",
         "javassist/",
         "com/sun/jna/",
-        "org/spongepowered/"
+        "org/spongepowered/",
+        "net/jodah/typetools"
     )
     lateinit var fileIndicator: JLabel
     lateinit var fileSelectButton: JButton
@@ -38,7 +42,15 @@ object GUI: JFrame("Theia") {
         val header = JPanel()
         header.layout = BoxLayout(header, BoxLayout.X_AXIS)
 
-        val label = JLabel(ImageIcon(ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(500, 250, Image.SCALE_DEFAULT)))
+        val label = JLabel(
+            ImageIcon(
+                ImageIcon(javaClass.classLoader.getResource("theia.png")).image.getScaledInstance(
+                    500,
+                    250,
+                    Image.SCALE_DEFAULT
+                )
+            )
+        )
         header.add(label)
 
         val fileBox = JPanel()
@@ -50,7 +62,7 @@ object GUI: JFrame("Theia") {
         fileSelectButton = JButton("Select File")
         fileSelectButton.addActionListener { e ->
             val fileChooser = NativeJFileChooser()
-            if (fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
+            if(fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
                 file = fileChooser.selectedFile
                 fileIndicator.text = "File: ${file.name}"
                 runButton.isEnabled = true
@@ -78,13 +90,18 @@ object GUI: JFrame("Theia") {
                         tabs.selectedIndex = 0
                         exclusions.clear()
                         exclusionsBox.text.split("\n").filter { !it.isBlank() }.forEach { exclusions.add(it) }
-                        Theia.run(file, if (excludeLibraries.isSelected) exclusions else listOf())
+                        Theia.run(file, if(excludeLibraries.isSelected) exclusions else listOf())
                         runButton.isEnabled = true
                         runButton.text = "Run Theia"
                         finish()
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Please select a file to run with!", "Error", JOptionPane.ERROR_MESSAGE)
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Please select a file to run with!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    )
                 }
             }
         }
@@ -94,7 +111,7 @@ object GUI: JFrame("Theia") {
         fileBox.add(excludeLibraries)
 
         exclusionsBox = JTextArea()
-        for (defaultExclusion in exclusions) {
+        for(defaultExclusion in exclusions) {
             exclusionsBox.text += "$defaultExclusion\n"
         }
         fileBox.add(scrollPanel(exclusionsBox))
@@ -110,11 +127,13 @@ object GUI: JFrame("Theia") {
         tableOutputPanel.layout = BoxLayout(tableOutputPanel, BoxLayout.Y_AXIS)
 
         tabs = JTabbedPane()
-        tabs.add("Log",
+        tabs.add(
+            "Log",
             scrollPanel(logPanel)
         )
         add(tabs, BorderLayout.CENTER)
     }
+
     fun scrollPanel(component: Component): JScrollPane {
         val scrollPane = JScrollPane(component)
         scrollPane.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
@@ -122,13 +141,16 @@ object GUI: JFrame("Theia") {
         scrollPane.autoscrolls = true
         return scrollPane
     }
+
     fun finish() {
-        if (!runOnce) {
+        if(!runOnce) {
             runOnce = true
-            tabs.add("Table",
+            tabs.add(
+                "Table",
                 scrollPanel(tableOutputPanel)
             )
-            tabs.add("Text",
+            tabs.add(
+                "Text",
                 scrollPanel(oldOutputPanel)
             )
         }
@@ -137,27 +159,31 @@ object GUI: JFrame("Theia") {
         oldOutputPanel.text = Theia.log
         tabs.selectedIndex = 1
     }
+
     fun finishTypeTable() {
         tableOutputPanel.removeAll()
         val widthArray = arrayOf(0, 0, 0)
         val tableModels = arrayOfNulls<DefaultTableModel>(Theia.checks.size)
-        for ((index, check) in Theia.checks.withIndex()) {
+        for((index, check) in Theia.checks.withIndex()) {
             val model = DefaultTableModel(0, 3)
-            for (possible in check.possibles) {
+            for(possible in check.possibles) {
                 model.addRow(arrayOf(possible.severity.name, possible.clazz, possible.description))
-                if (JLabel(possible.severity.name).preferredSize.width > widthArray[0]) widthArray[0] = JLabel(possible.severity.name).preferredSize.width
-                if (JLabel(possible.clazz).preferredSize.width > widthArray[1]) widthArray[1] = JLabel(possible.clazz).preferredSize.width
-                if (JLabel(possible.description).preferredSize.width > widthArray[2]) widthArray[2] = JLabel(possible.description).preferredSize.width
+                if(JLabel(possible.severity.name).preferredSize.width > widthArray[0]) widthArray[0] =
+                    JLabel(possible.severity.name).preferredSize.width
+                if(JLabel(possible.clazz).preferredSize.width > widthArray[1]) widthArray[1] =
+                    JLabel(possible.clazz).preferredSize.width
+                if(JLabel(possible.description).preferredSize.width > widthArray[2]) widthArray[2] =
+                    JLabel(possible.description).preferredSize.width
             }
             tableModels[index] = model
         }
-        for (i in 0..Theia.checks.lastIndex) {
+        for(i in 0..Theia.checks.lastIndex) {
             val model = tableModels[i]!!
-            val table = object : JTable(model) {
+            val table = object: JTable(model) {
                 override fun isCellEditable(row: Int, column: Int) = false
             }
             var j = 0
-            for (column in table.columnModel.columns) {
+            for(column in table.columnModel.columns) {
                 column.minWidth = widthArray[j] + 20
                 j++
             }
@@ -165,13 +191,14 @@ object GUI: JFrame("Theia") {
             panel.layout = BorderLayout()
             panel.add(JLabel("${Theia.checks[i].name} - ${Theia.checks[i].desc}"), BorderLayout.WEST)
             tableOutputPanel.add(panel)
-            if (Theia.checks[i].possibles.isEmpty()) {
+            if(Theia.checks[i].possibles.isEmpty()) {
                 panel.add(JLabel(" - Passed check"), BorderLayout.SOUTH)
             } else {
                 tableOutputPanel.add(table)
             }
         }
     }
+
     fun open() {
         addElements()
 
@@ -182,10 +209,12 @@ object GUI: JFrame("Theia") {
         setLocationRelativeTo(null)
         isVisible = true // set visible
     }
+
     var lastLogHeight = 0
     fun log(text: String) {
-        logPanel.text = if (text.startsWith("\r")) logPanel.text.substringBeforeLast('\n') + '\n' + text else logPanel.text + '\n' + text
-        if (logPanel.height > lastLogHeight && logPanel.visibleRect.y + logPanel.visibleRect.height > lastLogHeight - 80) {
+        logPanel.text =
+            if(text.startsWith("\r")) logPanel.text.substringBeforeLast('\n') + '\n' + text else logPanel.text + '\n' + text
+        if(logPanel.height > lastLogHeight && logPanel.visibleRect.y + logPanel.visibleRect.height > lastLogHeight - 80) {
             logPanel.scrollRectToVisible(Rectangle(0, logPanel.height, 0, 0))
         }
         lastLogHeight = logPanel.height

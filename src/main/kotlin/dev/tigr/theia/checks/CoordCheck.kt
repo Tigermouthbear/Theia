@@ -8,7 +8,7 @@ import org.objectweb.asm.tree.FieldInsnNode
 /**
  * @author Crystallinqq
  * 4/14/20
- * 
+ *
  * Updated by dominikaaaa on 26/05/
  * Updated by GiantNuker 6/10/2020
  */
