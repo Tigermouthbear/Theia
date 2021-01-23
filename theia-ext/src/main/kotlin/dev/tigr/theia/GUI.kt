@@ -1,5 +1,6 @@
 package dev.tigr.theia
 
+import dev.tigr.theia.core.Result
 import dev.tigr.theia.core.Theia
 import li.flor.nativejfilechooser.NativeJFileChooser
 import java.awt.BorderLayout
@@ -15,8 +16,13 @@ import javax.swing.table.DefaultTableModel
 /**
  * @author GiantNuker
  * 6/10/2020
+ *
+ * updated by Tigermouthbear
+ * 1/23/21
  */
 object GUI: JFrame("Theia") {
+
+    private val cachedExec: Executor = Executors.newCachedThreadPool()
     private val exclusions = mutableListOf(
         "org/reflections/",
         "javassist/",
@@ -24,20 +30,32 @@ object GUI: JFrame("Theia") {
         "org/spongepowered/",
         "net/jodah/typetools"
     )
-    lateinit var fileIndicator: JLabel
-    lateinit var fileSelectButton: JButton
-    lateinit var runButton: JButton
-    lateinit var tabs: JTabbedPane
-    lateinit var logPanel: JTextArea
-    lateinit var oldOutputPanel: JTextArea
-    lateinit var tableOutputPanel: JPanel
-    lateinit var excludeLibraries: JCheckBox
-    lateinit var exclusionsBox: JTextArea
-    lateinit var file: File
-    var runOnce = false
-    private val cachedExec: Executor = Executors.newCachedThreadPool()
 
-    fun addElements() {
+    private lateinit var fileIndicator: JLabel
+    private lateinit var fileSelectButton: JButton
+    private lateinit var runButton: JButton
+    private lateinit var tabs: JTabbedPane
+    private lateinit var logPanel: JTextArea
+    private lateinit var jsonOutputPanel: JTextArea
+    private lateinit var textOutputPanel: JTextArea
+    private lateinit var tableOutputPanel: JPanel
+    private lateinit var excludeLibraries: JCheckBox
+    private lateinit var exclusionsBox: JTextArea
+
+    private lateinit var file: File
+    private var firstRun = true
+
+    fun open() {
+        addElements()
+
+        iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image
+        defaultCloseOperation = EXIT_ON_CLOSE
+        setSize(850, 700)
+        setLocationRelativeTo(null)
+        isVisible = true // set visible
+    }
+
+    private fun addElements() {
         layout = BorderLayout()
 
         val header = JPanel()
@@ -80,7 +98,8 @@ object GUI: JFrame("Theia") {
                     runButton.isEnabled = false
                     cachedExec.execute {
                         // display running info
-                        oldOutputPanel.text = "Running..."
+                        jsonOutputPanel.text = "Running..."
+                        textOutputPanel.text = "Running..."
                         tableOutputPanel.removeAll()
                         val panel = JPanel()
                         panel.layout = BorderLayout()
@@ -93,10 +112,9 @@ object GUI: JFrame("Theia") {
                         exclusionsBox.text.split("\n").filter { !it.isBlank() }.forEach { exclusions.add(it) }
 
                         // run
-                        Theia.run(file, if(excludeLibraries.isSelected) exclusions else listOf())
+                        finish(Theia.run(file, if(excludeLibraries.isSelected) exclusions else listOf()))
                         runButton.isEnabled = true
                         runButton.text = "Run Theia"
-                        finish()
                     }
                 } else {
                     JOptionPane.showMessageDialog(
@@ -109,6 +127,7 @@ object GUI: JFrame("Theia") {
             }
         }
         fileBox.add(runButton)
+
         excludeLibraries = JCheckBox("Exclude Libraries")
         excludeLibraries.isSelected = true
         fileBox.add(excludeLibraries)
@@ -124,8 +143,10 @@ object GUI: JFrame("Theia") {
 
         logPanel = JTextArea()
         logPanel.isEditable = false
-        oldOutputPanel = JTextArea()
-        oldOutputPanel.isEditable = false
+        jsonOutputPanel = JTextArea()
+        jsonOutputPanel.isEditable = false
+        textOutputPanel = JTextArea()
+        textOutputPanel.isEditable = false
         tableOutputPanel = JPanel()
         tableOutputPanel.layout = BoxLayout(tableOutputPanel, BoxLayout.Y_AXIS)
 
@@ -137,7 +158,7 @@ object GUI: JFrame("Theia") {
         add(tabs, BorderLayout.CENTER)
     }
 
-    fun scrollPanel(component: Component): JScrollPane {
+    private fun scrollPanel(component: Component): JScrollPane {
         val scrollPane = JScrollPane(component)
         scrollPane.verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
         scrollPane.horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
@@ -145,31 +166,39 @@ object GUI: JFrame("Theia") {
         return scrollPane
     }
 
-    fun finish() {
-        if(!runOnce) {
-            runOnce = true
+    private fun finish(result: Result) {
+        if(firstRun) {
+            firstRun = false
             tabs.add(
                 "Table",
                 scrollPanel(tableOutputPanel)
             )
             tabs.add(
                 "Text",
-                scrollPanel(oldOutputPanel)
+                scrollPanel(textOutputPanel)
+            )
+            tabs.add(
+                "JSON",
+                scrollPanel(jsonOutputPanel)
             )
         }
-        finishTypeTable()
-        oldOutputPanel.scrollRectToVisible(Rectangle(0, 0))
-        oldOutputPanel.text = Theia.log
+        finishTypeTable(result)
+        textOutputPanel.scrollRectToVisible(Rectangle(0, 0))
+        textOutputPanel.text = result.getFormattedText()
+        jsonOutputPanel.scrollRectToVisible(Rectangle(0, 0))
+        jsonOutputPanel.text = result.getJSONString()
         tabs.selectedIndex = 1
     }
 
-    fun finishTypeTable() {
+    private fun finishTypeTable(result: Result) {
         tableOutputPanel.removeAll()
+
         val widthArray = arrayOf(0, 0, 0)
-        val tableModels = arrayOfNulls<DefaultTableModel>(Theia.checks.size)
-        for((index, check) in Theia.checks.withIndex()) {
+        val tableModels = arrayOfNulls<DefaultTableModel>(result.getMap().size)
+
+        for((index, entry) in result.getMap().entries.withIndex()) {
             val model = DefaultTableModel(0, 3)
-            for(possible in check.possibles) {
+            for(possible in entry.value) {
                 model.addRow(arrayOf(possible.severity.name, possible.clazz, possible.description))
                 if(JLabel(possible.severity.name).preferredSize.width > widthArray[0]) widthArray[0] =
                     JLabel(possible.severity.name).preferredSize.width
@@ -180,36 +209,27 @@ object GUI: JFrame("Theia") {
             }
             tableModels[index] = model
         }
-        for(i in 0..Theia.checks.lastIndex) {
+
+        for(i in 0..result.checks.lastIndex) {
             val model = tableModels[i]!!
             val table = object: JTable(model) {
                 override fun isCellEditable(row: Int, column: Int) = false
             }
+
             var j = 0
             for(column in table.columnModel.columns) {
                 column.minWidth = widthArray[j] + 20
                 j++
             }
+
             val panel = JPanel()
             panel.layout = BorderLayout()
-            panel.add(JLabel("${Theia.checks[i].name} - ${Theia.checks[i].desc}"), BorderLayout.WEST)
+            panel.add(JLabel("${result.checks[i].name} - ${result.checks[i].desc}"), BorderLayout.WEST)
             tableOutputPanel.add(panel)
-            if(Theia.checks[i].possibles.isEmpty()) {
-                panel.add(JLabel(" - Passed check"), BorderLayout.SOUTH)
-            } else {
-                tableOutputPanel.add(table)
-            }
+
+            if(result.checks[i].possibles.isEmpty()) panel.add(JLabel(" - Passed check"), BorderLayout.SOUTH)
+            else tableOutputPanel.add(table)
         }
-    }
-
-    fun open() {
-        addElements()
-
-        iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image
-        defaultCloseOperation = EXIT_ON_CLOSE
-        setSize(850, 700)
-        setLocationRelativeTo(null)
-        isVisible = true // set visible
     }
 
     var lastLogHeight = 0

@@ -25,7 +25,7 @@ object CommandCheck: AbstractCheck("CommandCheck", "Executes a system command") 
                     if(insn is MethodInsnNode && methods.contains(format(insn))) {
                         possibles.add(
                             Possible(
-                                Possible.Severity.ALERT,
+                                Possible.Severity.SEVERE,
                                 "Shell command executed",
                                 cn.name
                             )

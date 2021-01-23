@@ -30,6 +30,7 @@ allprojects {
 
     dependencies {
         compile "li.flor:native-j-file-chooser:1.6.4"
+        compile "org.json:json:20190722"
 
         compile "org.ow2.asm:asm:7.3.1"
         compile "org.ow2.asm:asm-tree:7.3.1"

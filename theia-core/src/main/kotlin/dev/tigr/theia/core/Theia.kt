@@ -10,9 +10,12 @@ import kotlin.concurrent.thread
  * 4/10/20
  *
  * Updated by GiantNuker 6/10/2020
+ * Updated by Tigermouthbear 1/23/2021
  */
 object Theia {
-    private val overviewMap: MutableMap<String, ArrayList<AbstractCheck>> = hashMapOf()
+    var logCallback: (String) -> Unit = {}
+
+    private lateinit var exclusions: List<String>
     val checks: Array<AbstractCheck> = arrayOf(
         ConnectionCheck,
         URLCheck,
@@ -22,20 +25,15 @@ object Theia {
         ClassloadCheck
     )
 
-    private lateinit var exclusions: List<String>
-    var log: String = ""
-    var logCallback: (String) -> Unit = {}
-
-    fun run(file: File, exclusions: List<String>) {
+    fun run(file: File, exclusions: List<String>): Result {
         val startTime = System.currentTimeMillis()
-        Theia.exclusions = exclusions
+        this.exclusions = exclusions
 
-        // clear previous possibles
+        // reset checks possibles
         checks.forEach { it.possibles.clear() }
-        overviewMap.clear()
 
+        // background timer
         val program = Program(file)
-        val out = StringBuilder()
         var completionIndex = -1
         var checkName = ""
         var mStartTime = 0L
@@ -55,8 +53,8 @@ object Theia {
                 }
             }
         }
-        log("Processing: ${file.name}")
-        log("")
+        log("Processing: ${file.name}\n")
+
         // run checks
         checks.forEach { check ->
             completionIndex = checks.indexOf(check)
@@ -66,49 +64,13 @@ object Theia {
             active = true
             check.run(program)
             active = false
-            log("\r${completionIndex + 1}/${checks.size} - $checkName [${System.currentTimeMillis() - mStartTime}ms]")
-            log("")
+            log("\r${completionIndex + 1}/${checks.size} - $checkName [${System.currentTimeMillis() - mStartTime}ms]\n")
         }
         completionIndex = checks.size
+
         log("Done in ${System.currentTimeMillis() - startTime}ms")
 
-        // print checks
-        checks.forEach { check ->
-            if(check.possibles.size > 0) {
-                out.append(check.name + ": {\n")
-                check.possibles.forEach { possible ->
-                    out.append("\t" + possible.severity.name + ": " + possible.description + " in " + possible.clazz + "\n")
-                }
-                out.append("}\n")
-            } else {
-                out.append(check.name + ": CLEAR\n")
-            }
-        }
-
-        // generate overview map
-        checks.forEach { check ->
-            check.possibles.forEach { possible ->
-                if(overviewMap.containsKey(possible.clazz) && !overviewMap[possible.clazz]!!.contains(check)) overviewMap[possible.clazz]!!.add(
-                    check
-                )
-                else overviewMap[possible.clazz] = arrayListOf(check)
-            }
-        }
-
-        // print overview map formatted
-        if(overviewMap.keys.isNotEmpty()) {
-            out.append("\nOverview:\n")
-            overviewMap.keys.forEach { clazz ->
-                val o: StringBuilder = StringBuilder("\t$clazz: ")
-                overviewMap[clazz]!!.forEach { check -> o.append(check.name + " ") }
-                out.append("$o\n")
-            }
-        } else {
-            out.append("Program all clear!\n")
-        }
-
-        out.append("\nTheia completed in " + (System.currentTimeMillis() - startTime) + " milliseconds")
-        log = out.toString()
+        return Result(checks)
     }
 
     fun isExcluded(className: String): Boolean {

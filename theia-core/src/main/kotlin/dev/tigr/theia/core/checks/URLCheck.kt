@@ -43,7 +43,7 @@ object URLCheck: AbstractCheck("URLCheck", "URL created") {
         while(thread.isAlive) {
             if(System.currentTimeMillis() - startTime > 20000) {
                 thread.stop()
-                possibles.add(Possible(Possible.Severity.ALERT, "URL CHECK TIMED OUT", "URL CHECK TIMED OUT"))
+                possibles.add(Possible(Possible.Severity.WARN, "URL CHECK TIMED OUT", "URL CHECK TIMED OUT"))
                 return
             }
             Thread.sleep(10)

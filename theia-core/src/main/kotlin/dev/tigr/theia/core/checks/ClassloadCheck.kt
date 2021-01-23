@@ -24,7 +24,7 @@ object ClassloadCheck: AbstractCheck("ClassloadCheck", "Dynamically loads a clas
                             "defineClass" ->
                                 possibles.add(
                                     Possible(
-                                        Possible.Severity.ALERT, "Dynamically defined class with defineClass.", cn.name
+                                        Possible.Severity.SEVERE, "Dynamically defined class with defineClass.", cn.name
                                     )
                                 )
                             "getDeclaredField" ->
@@ -41,7 +41,7 @@ object ClassloadCheck: AbstractCheck("ClassloadCheck", "Dynamically loads a clas
                 if(cn.superName == "java/lang/ClassLoader") {
                     possibles.add(
                         Possible(
-                            Possible.Severity.ALERT, "Dynamically defined class", cn.name
+                            Possible.Severity.SEVERE, "Dynamically defined class", cn.name
                         )
                     )
                 }

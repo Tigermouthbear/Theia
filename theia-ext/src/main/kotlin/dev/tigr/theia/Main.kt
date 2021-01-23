@@ -1,7 +1,6 @@
 package dev.tigr.theia
 
 import dev.tigr.theia.core.Theia
-import dev.tigr.theia.core.Theia.log
 import java.io.File
 
 /**
@@ -16,30 +15,32 @@ fun main(args: Array<String>) {
         return
     }
 
+    // contributors: feel free to add your name here
+    val credits = "Theia v0.2\n" +
+            "Created by Tigermouthbear\n" +
+            "With contributions from GiantNuker, Crystalinqq, and Dominika\n"
+
+    print(
+        "___________.__           .__        \n" +
+        "\\__    ___/|  |__   ____ |__|____   \n" +
+        "  |    |   |  |  \\_/ __ \\|  \\__  \\  \n" +
+        "  |    |   |   Y  \\  ___/|  |/ __ \\_\n" +
+        "  |____|   |___|  /\\___  >__(____  /\n" +
+        "                \\/     \\/        \\/ \n" +
+        credits
+    )
+
     when(args.size) {
         0 -> {
             // enable anti-aliasing
             System.setProperty("awt.useSystemAAFontSettings", "on")
             System.setProperty("swing.aatext", "true")
 
-            Theia.logCallback = { GUI.log(it) }
             GUI.open()
+            GUI.log(credits)
+            Theia.logCallback = { GUI.log(it) }
         }
-        1 -> print(Theia.run(File(args[0]), listOf()))
-        2 -> print(Theia.run(File(args[0]), args[1].split(",")))
+        1 -> print(Theia.run(File(args[0]), listOf()).getJSONString())
+        2 -> print(Theia.run(File(args[0]), args[1].split(",")).getJSONString())
     }
-
-    log(
-        "___________.__           .__        \n" +
-                "\\__    ___/|  |__   ____ |__|____   \n" +
-                "  |    |   |  |  \\_/ __ \\|  \\__  \\  \n" +
-                "  |    |   |   Y  \\  ___/|  |/ __ \\_\n" +
-                "  |____|   |___|  /\\___  >__(____  /\n" +
-                "                \\/     \\/        \\/ \n"
-    )
-    log("Theia v0.2")
-    log("Created by Tigermouthbear")
-    log("With contributions from")
-    log("GiantNuker, Crystalinqq, and Dominika\n")
-    log(Theia.log)
 }
