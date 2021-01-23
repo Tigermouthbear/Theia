@@ -29,22 +29,17 @@ object ClassloadCheck : AbstractCheck("ClassloadCheck", "Dynamically loads a cla
                                 )
                             "getDeclaredField" ->
                                 possibles.add(
-                                    Possible(Possible.Severity.WARN, "Accesses field with Reflect API (May be dynamically loading classes/resources)", cn.name
+                                    Possible(
+                                        Possible.Severity.WARN, "Accesses field with Reflect API (May be dynamically loading classes/resources)", cn.name
                                     )
                                 )
                         }
                     }
                 }
-                if (cn.superName == "java/lang/ClassLoader") {
+                if(cn.superName == "java/lang/ClassLoader") {
                     possibles.add(
                         Possible(
                             Possible.Severity.ALERT, "Dynamically defined class", cn.name
-                        )
-                    )
-                } else {
-                    possibles.add(
-                        Possible(
-                            Possible.Severity.CHECK, "Might have dynamically defined class", cn.name
                         )
                     )
                 }
