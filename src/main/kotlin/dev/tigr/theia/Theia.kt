@@ -37,16 +37,16 @@ object Theia {
         var mStartTime = 0L
         var active = false
         thread(start = true) {
-            while (true) {
+            while(true) {
                 sleep(10)
-                if (active) {
-                    if (completionIndex == -1) {
+                if(active) {
+                    if(completionIndex == -1) {
                         log("\rProcessing: ${file.name}")
-                    } else if (completionIndex < checks.size) {
+                    } else if(completionIndex < checks.size) {
                         log("\r${completionIndex + 1}/${checks.size} - $checkName [${System.currentTimeMillis() - mStartTime}ms]")
                     }
                 }
-                if (completionIndex == checks.size) {
+                if(completionIndex == checks.size) {
                     break
                 }
             }
@@ -70,7 +70,7 @@ object Theia {
 
         // print checks
         checks.forEach { check ->
-            if (check.possibles.size > 0) {
+            if(check.possibles.size > 0) {
                 out.append(check.name + ": {\n")
                 check.possibles.forEach { possible ->
                     out.append("\t" + possible.severity.name + ": " + possible.description + " in " + possible.clazz + "\n")
@@ -84,7 +84,7 @@ object Theia {
         // generate overview map
         checks.forEach { check ->
             check.possibles.forEach { possible ->
-                if (overviewMap.containsKey(possible.clazz) && !overviewMap[possible.clazz]!!.contains(check)) overviewMap[possible.clazz]!!.add(
+                if(overviewMap.containsKey(possible.clazz) && !overviewMap[possible.clazz]!!.contains(check)) overviewMap[possible.clazz]!!.add(
                     check
                 )
                 else overviewMap[possible.clazz] = arrayListOf(check)
@@ -92,7 +92,7 @@ object Theia {
         }
 
         // print overview map formatted
-        if (overviewMap.keys.isNotEmpty()) {
+        if(overviewMap.keys.isNotEmpty()) {
             out.append("\nOverview:\n")
             overviewMap.keys.forEach { clazz ->
                 val o: StringBuilder = StringBuilder("\t$clazz: ")
@@ -108,14 +108,14 @@ object Theia {
     }
 
     fun isExcluded(className: String): Boolean {
-        for (depencency in exclusions) {
-            if (className.startsWith(depencency)) return true
+        for(depencency in exclusions) {
+            if(className.startsWith(depencency)) return true
         }
         return false
     }
 }
 
 fun log(text: String) {
-    if (text.startsWith('\r')) print(text) else print("\n$text")
-    if (GUI.isVisible) GUI.log(text)
+    if(text.startsWith('\r')) print(text) else print("\n$text")
+    if(GUI.isVisible) GUI.log(text)
 }
