@@ -36,6 +36,7 @@ object GUI: JFrame("Theia") {
     lateinit var file: File
     var runOnce = false
     private val cachedExec: Executor = Executors.newCachedThreadPool()
+
     fun addElements() {
         layout = BorderLayout()
 
@@ -75,12 +76,10 @@ object GUI: JFrame("Theia") {
         runButton.addActionListener {
             if(runButton.text != "Running...") {
                 if(GUI::file.isInitialized) {
-                    // clear previous possibles
-                    Theia.checks.forEach { it.possibles.clear() }
-
                     runButton.text = "Running..."
                     runButton.isEnabled = false
                     cachedExec.execute {
+                        // display running info
                         oldOutputPanel.text = "Running..."
                         tableOutputPanel.removeAll()
                         val panel = JPanel()
@@ -88,8 +87,12 @@ object GUI: JFrame("Theia") {
                         panel.add(JLabel("Running..."), BorderLayout.WEST)
                         tableOutputPanel.add(panel)
                         tabs.selectedIndex = 0
+
+                        // add exclusions
                         exclusions.clear()
                         exclusionsBox.text.split("\n").filter { !it.isBlank() }.forEach { exclusions.add(it) }
+
+                        // run
                         Theia.run(file, if(excludeLibraries.isSelected) exclusions else listOf())
                         runButton.isEnabled = true
                         runButton.text = "Run Theia"
@@ -204,7 +207,6 @@ object GUI: JFrame("Theia") {
 
         iconImage = ImageIcon(javaClass.classLoader.getResource("icon.png")).image
         defaultCloseOperation = EXIT_ON_CLOSE
-        //GUI.pack() // pack elements
         setSize(850, 700)
         setLocationRelativeTo(null)
         isVisible = true // set visible

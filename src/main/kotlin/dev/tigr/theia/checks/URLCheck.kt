@@ -48,6 +48,7 @@ object URLCheck: AbstractCheck("URLCheck", "URL created") {
             }
             Thread.sleep(10)
         }
+        methods.clear()
     }
 
     private fun getURL(target: TypeInsnNode, program: Program): String {

@@ -30,6 +30,10 @@ object Theia {
         val startTime = System.currentTimeMillis()
         this.exclusions = exclusions
 
+        // clear previous possibles
+        checks.forEach { it.possibles.clear() }
+        overviewMap.clear()
+
         val program = Program(file)
         val out = StringBuilder()
         var completionIndex = -1
