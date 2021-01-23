@@ -1,7 +1,6 @@
-package dev.tigr.theia
+package dev.tigr.theia.core
 
-import dev.tigr.theia.checks.*
-import dev.tigr.theia.gui.GUI
+import dev.tigr.theia.core.checks.*
 import java.io.File
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
@@ -25,10 +24,11 @@ object Theia {
 
     private lateinit var exclusions: List<String>
     var log: String = ""
+    var logCallback: (String) -> Unit = {}
 
     fun run(file: File, exclusions: List<String>) {
         val startTime = System.currentTimeMillis()
-        this.exclusions = exclusions
+        Theia.exclusions = exclusions
 
         // clear previous possibles
         checks.forEach { it.possibles.clear() }
@@ -117,9 +117,9 @@ object Theia {
         }
         return false
     }
-}
 
-fun log(text: String) {
-    if(text.startsWith('\r')) print(text) else print("\n$text")
-    if(GUI.isVisible) GUI.log(text)
+    fun log(text: String) {
+        if(text.startsWith('\r')) print(text) else print("\n$text")
+        logCallback.invoke(text)
+    }
 }

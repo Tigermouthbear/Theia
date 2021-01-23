@@ -1,2 +1,3 @@
-rootProject.name = 'Theia'
-
+rootProject.name = "Theia"
+include "theia-core"
+include "theia-ext"

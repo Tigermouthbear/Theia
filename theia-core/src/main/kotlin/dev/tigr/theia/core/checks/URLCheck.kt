@@ -1,7 +1,7 @@
-package dev.tigr.theia.checks
+package dev.tigr.theia.core.checks
 
-import dev.tigr.theia.Possible
-import dev.tigr.theia.Program
+import dev.tigr.theia.core.Possible
+import dev.tigr.theia.core.Program
 import org.objectweb.asm.tree.LdcInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode

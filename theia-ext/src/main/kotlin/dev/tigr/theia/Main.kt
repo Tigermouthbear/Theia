@@ -1,6 +1,7 @@
 package dev.tigr.theia
 
-import dev.tigr.theia.gui.GUI
+import dev.tigr.theia.core.Theia
+import dev.tigr.theia.core.Theia.log
 import java.io.File
 
 /**
@@ -21,6 +22,7 @@ fun main(args: Array<String>) {
             System.setProperty("awt.useSystemAAFontSettings", "on")
             System.setProperty("swing.aatext", "true")
 
+            Theia.logCallback = { GUI.log(it) }
             GUI.open()
         }
         1 -> print(Theia.run(File(args[0]), listOf()))

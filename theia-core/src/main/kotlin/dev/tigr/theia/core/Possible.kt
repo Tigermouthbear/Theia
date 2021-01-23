@@ -1,4 +1,4 @@
-package dev.tigr.theia
+package dev.tigr.theia.core
 
 /**
  * @author Tigermouthbear

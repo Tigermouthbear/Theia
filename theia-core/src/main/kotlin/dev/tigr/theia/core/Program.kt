@@ -1,4 +1,4 @@
-package dev.tigr.theia
+package dev.tigr.theia.core
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.ClassNode

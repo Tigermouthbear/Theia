@@ -1,0 +1,20 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm"
+    id "com.github.johnrengelman.shadow"
+}
+
+archivesBaseName = "theia"
+
+dependencies {
+    compile project(":theia-core")
+}
+
+shadowJar() {
+    setClassifier("all")
+
+    manifest {
+        attributes "Main-Class": "dev.tigr.theia.MainKt"
+    }
+}
+
+build.dependsOn.add("shadowJar")

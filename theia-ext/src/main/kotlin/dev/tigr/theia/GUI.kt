@@ -1,6 +1,6 @@
-package dev.tigr.theia.gui
+package dev.tigr.theia
 
-import dev.tigr.theia.Theia
+import dev.tigr.theia.core.Theia
 import li.flor.nativejfilechooser.NativeJFileChooser
 import java.awt.BorderLayout
 import java.awt.Component

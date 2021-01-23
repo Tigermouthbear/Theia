@@ -1,0 +1,5 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm"
+}
+
+archivesBaseName = "theia-core"

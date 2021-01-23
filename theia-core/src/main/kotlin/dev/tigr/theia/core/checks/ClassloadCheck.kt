@@ -1,8 +1,8 @@
-package dev.tigr.theia.checks
+package dev.tigr.theia.core.checks
 
-import dev.tigr.theia.Possible
-import dev.tigr.theia.Program
-import dev.tigr.theia.Theia
+import dev.tigr.theia.core.Possible
+import dev.tigr.theia.core.Program
+import dev.tigr.theia.core.Theia
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.MethodInsnNode
 import org.objectweb.asm.tree.MethodNode
