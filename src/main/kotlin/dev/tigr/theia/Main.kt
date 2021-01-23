@@ -35,6 +35,7 @@ fun main(args: Array<String>) {
                 "  |____|   |___|  /\\___  >__(____  /\n" +
                 "                \\/     \\/        \\/ \n"
     )
+    log("Theia v0.2")
     log("Created by Tigermouthbear")
     log("With contributions from")
     log("GiantNuker, Crystalinqq, and Dominika\n")

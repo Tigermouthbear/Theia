@@ -5,7 +5,7 @@ plugins {
 }
 
 group "dev.tigr"
-version "0.1-SNAPSHOT"
+version "0.2"
 
 sourceCompatibility = 1.8
 
