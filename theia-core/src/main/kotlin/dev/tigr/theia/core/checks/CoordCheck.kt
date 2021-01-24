@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.FieldInsnNode
  * @author Crystallinqq
  * 4/14/20
  *
- * Updated by dominikaaaa on 26/05/
+ * Updated by l1ving on 26/05/2020
  * Updated by GiantNuker 6/10/2020
  */
 object CoordCheck: AbstractCheck("CoordCheck", "A coordinate was referenced. Most clients use this") {
