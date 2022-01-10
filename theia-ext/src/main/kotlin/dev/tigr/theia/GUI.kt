@@ -80,7 +80,11 @@ object GUI: JFrame("Theia") {
 
         fileSelectButton = JButton("Select File")
         fileSelectButton.addActionListener { e ->
-            val fileChooser = NativeJFileChooser()
+            val fileChooser = if(System.getProperty("os.name").lowercase().contains("windows")) {
+                NativeJFileChooser()
+            } else {
+                JFileChooser()
+            }
             if(fileChooser.showOpenDialog(e.source as Component?) == NativeJFileChooser.APPROVE_OPTION) {
                 file = fileChooser.selectedFile
                 fileIndicator.text = "File: ${file.name}"
@@ -109,7 +113,7 @@ object GUI: JFrame("Theia") {
 
                         // add exclusions
                         exclusions.clear()
-                        exclusionsBox.text.split("\n").filter { !it.isBlank() }.forEach { exclusions.add(it) }
+                        exclusionsBox.text.split("\n").filter { it.isNotBlank() }.forEach { exclusions.add(it) }
 
                         // run
                         finish(Theia.run(file, if(excludeLibraries.isSelected) exclusions else listOf()))
@@ -129,7 +133,7 @@ object GUI: JFrame("Theia") {
         fileBox.add(runButton)
 
         excludeLibraries = JCheckBox("Exclude Libraries")
-        excludeLibraries.isSelected = true
+        excludeLibraries.isSelected = false
         fileBox.add(excludeLibraries)
 
         exclusionsBox = JTextArea()
@@ -232,7 +236,7 @@ object GUI: JFrame("Theia") {
         }
     }
 
-    var lastLogHeight = 0
+    private var lastLogHeight = 0
     fun log(text: String) {
         logPanel.text =
             if(text.startsWith("\r")) logPanel.text.substringBeforeLast('\n') + '\n' + text else logPanel.text + '\n' + text

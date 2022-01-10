@@ -41,8 +41,8 @@ object URLCheck: AbstractCheck("URLCheck", "URL created") {
         thread.start()
         val startTime = System.currentTimeMillis()
         while(thread.isAlive) {
-            if(System.currentTimeMillis() - startTime > 20000) {
-                thread.stop()
+            if(System.currentTimeMillis() - startTime > 25000) {
+                thread.interrupt()
                 possibles.add(Possible(Possible.Severity.WARN, "URL CHECK TIMED OUT", "URL CHECK TIMED OUT"))
                 return
             }

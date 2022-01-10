@@ -16,9 +16,9 @@ fun main(args: Array<String>) {
     }
 
     // contributors: feel free to add your name here
-    val credits = "Theia v0.2\n" +
+    val credits = "Theia v0.2.1\n" +
             "Created by Tigermouthbear\n" +
-            "With contributions from GiantNuker, Crystalinqq, and Liv\n"
+            "With contributions from GiantNuker, Crystallinqq, Liv and perry\n"
 
     print(
         "___________.__           .__        \n" +

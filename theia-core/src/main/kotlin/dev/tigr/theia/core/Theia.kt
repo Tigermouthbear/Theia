@@ -33,7 +33,7 @@ object Theia {
         checks.forEach { it.possibles.clear() }
 
         // background timer
-        val program = Program(file)
+        val program = dev.tigr.theia.core.Program(file)
         var completionIndex = -1
         var checkName = ""
         var mStartTime = 0L
@@ -74,13 +74,13 @@ object Theia {
     }
 
     fun isExcluded(className: String): Boolean {
-        for(depencency in exclusions) {
-            if(className.startsWith(depencency)) return true
+        for(dependency in exclusions) {
+            if(className.startsWith(dependency)) return true
         }
         return false
     }
 
-    fun log(text: String) {
+    private fun log(text: String) {
         if(text.startsWith('\r')) print(text) else print("\n$text")
         logCallback.invoke(text)
     }

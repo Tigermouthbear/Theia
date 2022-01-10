@@ -12,7 +12,7 @@ import org.objectweb.asm.tree.MethodInsnNode
  * Updated by GiantNuker 6/10/2020
  */
 object CommandCheck: AbstractCheck("CommandCheck", "Executes a system command") {
-    val methods = arrayOf(
+    private val methods = arrayOf(
         "java/lang/Runtime:exec:(Ljava/lang/String;)Ljava/lang/Process;",
         "java/lang/ProcessBuilder:command:([Ljava/lang/String;)Ljava/lang/ProcessBuilder;"
     )

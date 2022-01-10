@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.MethodNode
 /**
  * @author GiantNuker
  * 6/9/2020
- * Updated by Crystallinqq 2 fix nukers easily bypassable resource cache check
+ * Updated by Crystallinqq 2 fix nukers easily bypass-able resource cache check
  * 8/15/2020
  */
 object ClassloadCheck: AbstractCheck("ClassloadCheck", "Dynamically loads a class (can bypass other checks)") {

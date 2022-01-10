@@ -1,20 +1,21 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm"
-    id "com.github.johnrengelman.shadow"
+    id 'org.jetbrains.kotlin.jvm'
+    id 'com.github.johnrengelman.shadow'
 }
 
-archivesBaseName = "theia"
+archivesBaseName = 'theia'
 
 dependencies {
-    compile project(":theia-core")
+    implementation project(':theia-core')
 }
 
 shadowJar() {
-    setClassifier("all")
+    archiveClassifier.set 'all'
 
-    manifest {
-        attributes "Main-Class": "dev.tigr.theia.MainKt"
-    }
+    manifest.attributes(
+            'Main-Class': 'dev.tigr.theia.MainKt'
+    )
+    exclude 'META-INF/maven/**', 'kotlin/**/*.kotlin_metadata', 'kotlin/**/*.kotlin_builtins', 'META-INF/*.kotlin_module', 'META-INF/versions/**'
 }
 
-build.dependsOn.add("shadowJar")
+build.dependsOn.add 'shadowJar'

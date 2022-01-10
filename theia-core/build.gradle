@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm"
+    id 'org.jetbrains.kotlin.jvm'
 }
 
-archivesBaseName = "theia-core"
+archivesBaseName = 'theia-core'

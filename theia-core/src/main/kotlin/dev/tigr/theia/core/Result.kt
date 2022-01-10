@@ -2,9 +2,8 @@ package dev.tigr.theia.core
 
 import dev.tigr.theia.core.checks.AbstractCheck
 import org.json.JSONArray
-import java.util.*
-import kotlin.collections.ArrayList
 import org.json.JSONObject
+import java.util.*
 
 /**
  * @author Tigermouthbear 1/23/21
@@ -16,7 +15,7 @@ open class Result(val checks: Array<AbstractCheck>) {
     private var json: JSONObject
     private var text: String
 
-    companion object empty: Result(arrayOf())
+    companion object Empty: Result(arrayOf())
 
     init {
         // generate overview and map
@@ -41,17 +40,17 @@ open class Result(val checks: Array<AbstractCheck>) {
 
     private fun generateMapJSON(): JSONObject {
         val jsonObject = JSONObject()
-        severityMap.forEach {
+        severityMap.forEach { it ->
             val checkObject = JSONObject()
-            it.value.forEach {
+            it.value.forEach { it1 ->
                 val severityArray = JSONArray()
-                it.value.forEach {
+                it1.value.forEach {
                     val possibleObject = JSONObject()
                     possibleObject.put("class", it.clazz)
                     possibleObject.put("description", it.description)
                     severityArray.put(possibleObject)
                 }
-                checkObject.put(it.key.name, severityArray)
+                checkObject.put(it1.key.name, severityArray)
             }
             jsonObject.put(it.key.name, checkObject)
         }
@@ -89,9 +88,9 @@ open class Result(val checks: Array<AbstractCheck>) {
         return out.toString()
     }
 
-    public fun getMap(): MutableMap<AbstractCheck, ArrayList<Possible>> = map
-    public fun getSeverityMap(): MutableMap<AbstractCheck, MutableMap<Possible.Severity, ArrayList<Possible>>> = severityMap
-    public fun getJSON(): JSONObject = json
-    public fun getJSONString(): String = json.toString(4)
-    public fun getFormattedText(): String = text
+    fun getMap(): MutableMap<AbstractCheck, ArrayList<Possible>> = map
+    fun getSeverityMap(): MutableMap<AbstractCheck, MutableMap<Possible.Severity, ArrayList<Possible>>> = severityMap
+    fun getJSON(): JSONObject = json
+    fun getJSONString(): String = json.toString(4)
+    fun getFormattedText(): String = text
 }
